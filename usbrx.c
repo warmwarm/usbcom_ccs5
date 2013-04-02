@@ -68,12 +68,12 @@ void usbRxHandler(unsigned char*rev_buf)
         union t_usb_cmd rsp;
 	    memset(&rsp,0,sizeof(rsp));
 		rsp.msg.cmd = signal + 100;
-		rsp.msg.state = 0;
+		rsp.msg.state = 1;
             switch (signal)
             {
             	case WRITE_LUT_REQ:  //write  LUT to EEPROM
             	{
-            		print("setting lut0");
+            		u1printf("setting lut0 index[%d]\n\r",state);
             		Uchar batch_num=state;
             	    if(0 == batch_num)
             	    {
@@ -244,15 +244,16 @@ void usbRxHandler(unsigned char*rev_buf)
             		 unsigned long LoAdd, HiAdd;
 					 int start;
 					 start = rxcmd->msg.state * 512;
+					 j = rxcmd->msgstr.str[0];
             		 InformFPGAReleaseEEPROM();
             		 EnableTristate();
 
-            		 print("read LUT Table begin:");
-					 for(j = 0;j<16;j++)
-					 {
+            		 u1printf("read LUT Table begin:[%d] start[%d]\n\r",j,start);
+					 
+					 rsp.msg.state = j;
 	            		 for(i=start;i<16+start;i++)
 	            		 {
-	            		    rsp.msg.state = j;
+	            		    
 	            		    HiAdd = HIGH((j*16+i)*2);
 	            		    LoAdd = LOW((j*16+i)*2);
 	            		    if (!SPIReadByte(HiAdd, LoAdd, &value))
@@ -261,8 +262,10 @@ void usbRxHandler(unsigned char*rev_buf)
 
 	            		        DisableTristate();
 	            		        InformFPGATakeEEPROM();
-	            		        return;
+								rsp.msg.state = 255;
+	            		        break;
 	            		    }
+							u1printf("%v1[%d]\n\r",value);
 							rsp.msg.data[i] = value;
 						    HiAdd = HIGH((j*16+i)*2 + 1);
 	            		    LoAdd = LOW((j*16+i)*2 + 1);
@@ -272,20 +275,20 @@ void usbRxHandler(unsigned char*rev_buf)
 
 	            		        DisableTristate();
 	            		        InformFPGATakeEEPROM();
-	            		        return;
+								rsp.msg.state = 255;
+	            		        break;
 	            		    }
-							rsp.msg.data[i] += value*0xFF;
+							u1printf("%v2[%d]\n\r",value);
+							rsp.msg.data[i] += value*0x100;
 							
-	            		    u1printf("%d",rsp.msg.data[i]);
-							SendDatatoHost(rsp.raw, DEC_TO_HOST_MSG_LENGTH);
-	            		}
-					}
+	            		    u1printf("%d\n\r",rsp.msg.data[i]);
+							//SendDatatoHost(rsp.raw, DEC_TO_HOST_MSG_LENGTH);
+					     }
 
             		print("read LUT done.");
             		DisableTristate();
             		InformFPGATakeEEPROM();
-            		
-            		return;
+					break;
             	}            	
             	
             	
@@ -295,16 +298,14 @@ void usbRxHandler(unsigned char*rev_buf)
             		//first set mode to gen2 mode.
                     
                     print("auto calibration data received ");  
-                    Delay(1);
+                    //Delay(1);
                     switch(rxcmd->msg.state)
                     {
                         case 0:
 	                    // to check mode, if its has imbedded lux meter then, 
 	                    // start a calibration and respond to host
 	                    // else, send host a warning.
-	                    if(MCUOpMode==MCU_OP_MODE_GEN2)
 	                    {
-	                     
 	    	               InfomFPGABeginCalibration();
 	    	               FPGACtrlBitSet=1;
 	    	               CALbuttonState=1;
@@ -315,40 +316,26 @@ void usbRxHandler(unsigned char*rev_buf)
 	    	               Delay(3);
 	    	               //tell lux meter to collect 
 	    	               SendRequestToLuxmeter(255,7);
-	    	              Delay(3);
-	    	              
-
-	    	              AutoCalibrationFromCalispector=true;
-
-	    	              //  SendCalibrationAckMsg();
-
-	    	                
-	                    }
-	                    else
-	                    {
-	                    	//build a warming message and send it back to host
-	                    	
-	 
-	                    	SendCalibrationNAckMsg();
-	                    	
-	                    }     	
+	    	               //Delay(3);
+	    	               AutoCalibrationFromCalispector=true;
+	                      }
 						break;
 						case 1:
-							gUsbGetLux = rxcmd->msg.data[0];
-							InfomFPGAGenGivenGrayScale(LOW(rxcmd->msg.data[0]),HIGH(rxcmd->msg.data[0]));
-							SendRequestToLuxmeter(LOW(rxcmd->msg.data[0]),HIGH(rxcmd->msg.data[0]));
-							return;
+							{
+							  gUsbGetLux = rxcmd->msg.data[0];
+							  InfomFPGAGenGivenGrayScale(LOW(rxcmd->msg.data[0]),HIGH(rxcmd->msg.data[0]));
+							  SendRequestToLuxmeter(LOW(rxcmd->msg.data[0]),HIGH(rxcmd->msg.data[0]));
+							  return;
+							}
 							break;
 						case 2:
 							ClearExistingCalibration();
-							rsp.msg.state = 1;
 							break;
 						case 3:
 							rsp.msg.state = calib_status;
 							break;
                     }
-            		print("data sent ");           		
-
+            		//print("data sent ");           		
             		break;
             	}
             	
@@ -425,6 +412,7 @@ void usbRxHandler(unsigned char*rev_buf)
 				//send feedback to host
 				
 	          }
+			u1printf("Send rsp\n\r");
 			SendDatatoHost(rsp.raw, DEC_TO_HOST_MSG_LENGTH);
  }
 
