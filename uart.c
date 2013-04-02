@@ -1,6 +1,10 @@
 #include "usbcom.h"
  
- extern tBoolean jumpToBootloaderSignaled;
+extern tBoolean jumpToBootloaderSignaled;
+
+extern Uchar FPGA_CTL;
+extern long FPGAStatus;
+
  
 void InitUART0()
 {
@@ -194,6 +198,7 @@ void cmdprocess(const unsigned char *pucBuffercc)
 	   	if(strcmp(cmd,"fend")==0)
 	   	{
 	   	      InfomFPGAEndCalibration();
+			  ClearCalibrationStatusMsg();
 	   	}
 		else
 	   	if(strcmp(cmd,"fcmsg")==0)
@@ -203,7 +208,7 @@ void cmdprocess(const unsigned char *pucBuffercc)
 		else
 	   	if(strcmp(cmd,"fmsg0")==0)
 	   	{
-	   	       WriteCalibrationStatusMsg0();
+	   	       InfomFPGAGenGivenGrayScale(0,0);
 	   	}
 		else
 	   	if(strcmp(cmd,"fmsg1")==0)
@@ -215,6 +220,19 @@ void cmdprocess(const unsigned char *pucBuffercc)
 	   	{
 	   	       WriteCalibrationStatusMsg2();
 	   	}
+		else
+	   	if(strcmp(cmd,"version")==0)
+	   	{
+	   	       u1printf("MCU Version:[%s]\n\r",MCU_VERSION_STRING);
+	   	}
+		else
+	   	if(strcmp(cmd,"reg")==0)
+	   	{
+	   	       ReadFPGAStatusRegister();
+	   	       u1printf("register:[%x] ctl[%x]\n\r",FPGAStatus,FPGA_CTL);
+	   	}
+
+		
 	   /*
         else
 	    if(strcmp(cmd,"lux")==0)

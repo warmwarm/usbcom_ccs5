@@ -62,7 +62,6 @@ void ProcessDataFromLuxmeter(unsigned char *pdata, unsigned int count)
 	unsigned char RxData[6];
 	unsigned long index;
 	float lux;
-
 	memcpy(RxData,pdata,count);
 	if (count==6)
 	{
@@ -75,7 +74,7 @@ void ProcessDataFromLuxmeter(unsigned char *pdata, unsigned int count)
 		  gUsbGetLux = -1;
 	   	}
 	
-	   u1printf("index[%d] lux[%f]\n\r",index,lux);
+	   //u1printf("index[%d] lux[%f]\n\r",index,lux);
        ///add by minghao 
 	   if(MCUOpMode==MCU_OP_MODE_GEN1)
 	   {
@@ -108,7 +107,7 @@ void ProcessDataFromLuxmeter(unsigned char *pdata, unsigned int count)
         return;
 		
 	}
-
+    
 	//read buttons status
     ReadFPGAStatusRegister(); 
 
@@ -131,8 +130,6 @@ void ProcessDataFromLuxmeter(unsigned char *pdata, unsigned int count)
     else
        PowerbuttonState=0;	
 
-	
-	
 	if(calib_status==CALST_STABLIZATION
 	||calib_status==CALST_BL_CTRL
 	||calib_status==CALST_BL_CTRL_LOW
@@ -145,7 +142,7 @@ void ProcessDataFromLuxmeter(unsigned char *pdata, unsigned int count)
 			ClearExistingCalibration();
 			//tell fpga to enter gen1 mode
 			if (usbIsPluged==1)
-			InformFPGASetGen1Mode();
+				InformFPGASetGen1Mode();
 			 
 			return;
 			
@@ -158,7 +155,6 @@ void ProcessDataFromLuxmeter(unsigned char *pdata, unsigned int count)
 			
 		}
 	}
-	 
 	switch (calib_status)
 	{
 		case CALST_NIL:
@@ -525,22 +521,13 @@ void ProcessDataFromLuxmeter(unsigned char *pdata, unsigned int count)
 
     		    
     		    }
-    		    
-    		    
-    		    
-    		    
-    			
+    		        		      			
     		}
     		else //error received
     		{
     		   SendRequestToLuxmeter(0,0);
     		}
-    					
-			
-			
-			
-			
-		
+
 		    break;	
 		}		
 		
@@ -549,9 +536,9 @@ void ProcessDataFromLuxmeter(unsigned char *pdata, unsigned int count)
 		{
 			//index = CurrMeasuredIndex;
 			//lux = sfLux[index];
-			u1printf("ddl[%d] index[%d] lux[%f]\n\r",CurrCalibratingDDL,index,lux);
+			u1printf("mesure ddl[%03d] index[%04d] lux %f\n\r",CurrCalibratingDDL,index,lux);
 			float CurrTargetLux=JND_to_LUMINANCE(JNDMin+CurrCalibratingDDL*JNDInterval);
-			u1printf("CurrTargetLux %f  PreMeasuredLux[%f]\n\r",CurrTargetLux,PreMeasuredLux);
+			//u1printf("CurrTargetLux %f  PreMeasuredLux[%f]\n\r",CurrTargetLux,PreMeasuredLux);
 			if (CurrCalibratingDDL<256)//
 			{
 			   if (lux >= CurrTargetLux) ///minghao ,change the condition
@@ -566,7 +553,7 @@ void ProcessDataFromLuxmeter(unsigned char *pdata, unsigned int count)
 				//	if (AutoCalibrationFromCalispector)
 				//	   SendLUTEntryWithLuminMsg(CurrCalibratingDDL, index, lux);
 					
-					u1printf("write lut1 ddl[%d] index[%d] lux[%f]\n\r",CurrCalibratingDDL,index,lux);
+					u1printf("writelut nor ddl[%03d] index[%04d] lux %f\n\r",CurrCalibratingDDL,index,lux);
 						
 				  }
 				  else
@@ -576,7 +563,7 @@ void ProcessDataFromLuxmeter(unsigned char *pdata, unsigned int count)
 					//report 
 				    //	if (AutoCalibrationFromCalispector)
 				    //	   SendLUTEntryWithLuminMsg(CurrCalibratingDDL, index, PreMeasuredLux);					
-					u1printf("write lut tuple Pre: ddl[%d] index[%d] lux[%f]\n\r",CurrCalibratingDDL,index-1,PreMeasuredLux);
+					u1printf("writelut pre ddl[%03d] index[%04d] lux %f\n\r",CurrCalibratingDDL,index-1,PreMeasuredLux);
 									
 				  }
 				  
@@ -679,14 +666,8 @@ void ProcessDataFromLuxmeter(unsigned char *pdata, unsigned int count)
 				return;
 				
 			}
-			
-		
 		break;	
 		}
-		
-		
-		
-		
 		default:
 		{
 			
@@ -696,7 +677,6 @@ void ProcessDataFromLuxmeter(unsigned char *pdata, unsigned int count)
 		}			
 		
 	}
-	
 	
 	
 	

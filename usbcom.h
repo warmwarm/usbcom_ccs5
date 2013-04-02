@@ -39,7 +39,7 @@
 #include "drivers/buttons.h"
 #include "drivers/formike128x128x16.h"
 
-#define  MCU_VERSION_STRING "beta"
+#define  MCU_VERSION_STRING "2013-02-24"
  
  
  

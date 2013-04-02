@@ -20,8 +20,9 @@ long ReadFPGAStatusRegister()
 
   GPIOPinTypeGPIOOutput(GPIO_PORTD_BASE, GPIO_PINS );
 
-  TST_UART1_Send(&u,2);
+  //TST_UART1_Send(&u,2);
   FPGAStatus=u;
+  u1printf("FPGAStatus :%x\n\r",FPGAStatus);
   return 1;
 }
 

@@ -63,13 +63,13 @@ union t_usb_cmd
 	{
 	      Uchar cmd;
 		  Uchar state;
-		  Uint16 data[DEC_TO_HOST_INT_LENGTH];
+		  unsigned short data[DEC_TO_HOST_INT_LENGTH];
 	} msg;
 	struct
 	{
 	      Uchar cmd;
 		  Uchar state;
-		  Uint16 data;
+		  unsigned short data;
 		  float data2;
 	} msg2;
 	struct

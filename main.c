@@ -52,20 +52,9 @@ int main(void)
 
    ///add by Minghao
    backlightControlLevel = 255;
-   //InformFPGASetGen2Mode();
    while(!jumpToBootloaderSignaled)
    {
 
-
-	   /*
-	   	 SendRequestToLuxmeter(LOW(mindex),HIGH(mindex));
-		 Delay(2);
-		 mindex++;
-		 if(mindex > 2047)
-		 	{
-		 	 mindex = 0;
-		 	}
-		 	*/
      ///when usb pluged,change mode to Gen1
 	 if(usbIsPluged&&(MCUOpMode==MCU_OP_MODE_GEN2))
 	 {
@@ -73,28 +62,6 @@ int main(void)
 		InformFPGASetGen1Mode();
 	 }
 	 Delay(5);
-     /*
-	 if(0 == usbIsPluged)
-	 	{
-	 	    mindex = 0;
-			InfomFPGASetMaxBackgroundLevel(255);
-			InfomFPGABeginCalibration();
-			while(0 == usbIsPluged)
-			{
-	 		InfomFPGAGenGivenGrayScale(LOW(mindex),HIGH(mindex));
-		    Delay(1);
-			SendRequestToLuxmeter(LOW(mindex),HIGH(mindex));
-			mindex++;
-			if(mindex > 2048)
-				{
-				   mindex = 0;
-				}
-			Delay(1);
-			}
-			InfomFPGAEndCalibration();
-	 	}
-	 	*/
-	 //u1printf("loop\n\r");
    }
    u1printf("jump to boot loader\n\r");
    JumpToDFU();
