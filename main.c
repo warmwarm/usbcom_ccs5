@@ -29,7 +29,7 @@ int calib_status=CALST_NIL;
 volatile tBoolean jumpToBootloaderSignaled=false;
 extern int MCUOpMode;
 extern long usbIsPluged;
-extern int gUsbGetLux;
+volatile extern int gUsbGetLux;
 
 int main(void)
 {
@@ -56,11 +56,11 @@ int main(void)
    {
 
      ///when usb pluged,change mode to Gen1
-	 if(usbIsPluged&&(MCUOpMode==MCU_OP_MODE_GEN2))
-	 {
-	    ClearExistingCalibration();
-		InformFPGASetGen1Mode();
-	 }
+	 //if(usbIsPluged&&(MCUOpMode==MCU_OP_MODE_GEN2))
+	 //{
+	 //   ClearExistingCalibration();
+	 //	InformFPGASetGen1Mode();
+	 //}
 	 Delay(5);
    }
    u1printf("jump to boot loader\n\r");

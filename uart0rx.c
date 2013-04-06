@@ -68,9 +68,11 @@ void ProcessDataFromLuxmeter(unsigned char *pdata, unsigned int count)
 	   index=RxData[0]+RxData[1]*256;
 	
 	   lux=( RxData[2]*65536 +RxData[3]*256+RxData[4])*0.01;
+	   u1printf("lut value[%f] gUsbGetLux[%d]\n\r",lux,gUsbGetLux);
 	   if(gUsbGetLux >=0)
 	   	{
-	   	  SendLutToHost(gUsbGetLux,lux);
+	   	  u1printf("send lut index[%d]\n\r",gUsbGetLux);
+	   	  SendLutToHost(gUsbGetLux,RxData[2],RxData[3],RxData[4]);
 		  gUsbGetLux = -1;
 	   	}
 	
@@ -118,7 +120,12 @@ void ProcessDataFromLuxmeter(unsigned char *pdata, unsigned int count)
     
     if (CALButtonPressed())
     {
+        if(0 == CALbuttonState)
+        {
+        	InformFPGASetGen2Mode();
+        }
     	CALbuttonState=1;
+		
     }
 	else
 	{
@@ -136,13 +143,10 @@ void ProcessDataFromLuxmeter(unsigned char *pdata, unsigned int count)
 	||calib_status==CALST_CALIBRATION
 	)
 	{
-		if(PowerbuttonState==0||usbIsPluged==1)
+		if(PowerbuttonState==0)
 		{
 			
 			ClearExistingCalibration();
-			//tell fpga to enter gen1 mode
-			if (usbIsPluged==1)
-				InformFPGASetGen1Mode();
 			 
 			return;
 			

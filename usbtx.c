@@ -93,13 +93,17 @@ unsigned long SendLUTEntryWithLuminMsg(Uchar ddl, unsigned long index, float lum
 	
 }
 
-unsigned long SendLutToHost(Uint16 index,float lux)
+unsigned long SendLutToHost(unsigned short index,Uchar lux1,Uchar lux2,Uchar lux3)
 {
 	union t_usb_cmd rsp;
-	rsp.msg.cmd = CAL_GEN2_REQ + 100;
-	rsp.msg.state = 1;
-	rsp.msg2.data = index;
-	rsp.msg2.data2 = lux;
+	memset(&rsp,0,sizeof(rsp));
+	rsp.msgddl.cmd = CAL_GEN2_REQ + 100;
+	rsp.msgddl.state = 1;
+	rsp.msgddl.function = 1;
+	rsp.msgddl.index = index;
+	rsp.msgddl.lut1 = lux1;
+	rsp.msgddl.lut2 = lux2;
+	rsp.msgddl.lut3 = lux3;
 	return SendDatatoHost(rsp.raw, DEC_TO_HOST_MSG_LENGTH);
 }
 

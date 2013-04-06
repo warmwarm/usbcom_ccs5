@@ -78,6 +78,24 @@ union t_usb_cmd
 		  Uchar state;
 		  Uchar str[DEC_TO_HOST_MSG_LENGTH - 2];
 	} msgstr;
+	struct
+	{
+	      Uchar cmd;
+		  Uchar state;
+		  Uchar function;
+		  Uchar reserve;
+		  unsigned short index;
+		  Uchar lut1;
+		  Uchar lut2;
+		  Uchar lut3;
+	} msgddl;
+	struct
+	{
+	      Uchar cmd;
+		  Uchar function;
+		  unsigned short index;
+		  unsigned int   lut;
+	} msgddlreq;
 	  Uchar raw[DEC_TO_HOST_MSG_LENGTH];
 };
 

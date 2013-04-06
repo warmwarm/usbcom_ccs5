@@ -156,7 +156,8 @@ unsigned long SendCalibrationErrorMsg();
 unsigned long SendAutoCalibrationCompleteMsg();
 unsigned long SendLUTEntryMsg(Uchar ddl, unsigned long index);
 unsigned long SendLUTEntryWithLuminMsg(Uchar ddl, unsigned long index, float lumin);
-unsigned long SendLutToHost(Uint16 index,float lux);
+unsigned long SendLutToHost(unsigned short index,Uchar lux1,Uchar lux2,Uchar lux3);
+
 
 
 //UART

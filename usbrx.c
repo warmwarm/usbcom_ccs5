@@ -7,7 +7,7 @@ extern int bl_high_tested_num;
 extern volatile tBoolean jumpToBootloaderSignaled;
 extern long usbIsPluged;
 extern int MCUOpMode;
-int gUsbGetLux;
+volatile int gUsbGetLux;
 
 Uchar tx[34];
 unsigned char wbuff[513];
@@ -104,7 +104,8 @@ void usbRxHandler(unsigned char*rev_buf)
             		{
             			case 0: //begin calibration
             			{
-            				InfomFPGAEndCalibration();
+							InformFPGASetGen1Mode();
+							ClearExistingCalibration();
             				InfomFPGABeginCalibration();
             				break;
             			}
@@ -148,26 +149,23 @@ void usbRxHandler(unsigned char*rev_buf)
             	
             	case WRITE_LUT_DEFAULT_REQ://write  LUT to default EEPROM
             	{
-            	            		//print("setting lut2");
-            	            		Uchar batch_num=state;
-            	            		//itoa(valuechar, state);
-            	            	    //print(valuechar);
-            	            	    if(0 == batch_num)
-            	            	    {
-            	            	    	wbuff[512] = 0;
-            	            	    }
-            	                    if(wbuff[512] < 16)
-            	                    {
+            		Uchar batch_num=state;
+            	    if(0 == batch_num)
+            	    {
+            	    	wbuff[512] = 0;
+            	    }
+                    if(wbuff[512] < 16)
+                    {
 
-            	                    	wbuff[512]++;
-            	                    	memcpy(wbuff+batch_num*32,RxData+2,32);
-            	                    }
+                    	wbuff[512]++;
+                    	memcpy(wbuff+batch_num*32,RxData+2,32);
+                    }
 
-            	                    if(wbuff[512] == 16)
-            	                    {
-            	                    	WriteLUT(1);
-            	                    	print("write LUT to default done.");
-            	                    }
+                    if(wbuff[512] == 16)
+                    {
+                    	WriteLUT(1);
+                    	print("write LUT to default done.");
+                    }
             	    break;
             	}
             	case RESTORE_LUT_REQ://restored LUT 
@@ -225,15 +223,8 @@ void usbRxHandler(unsigned char*rev_buf)
             	case GOTO_BOOTLOADER_REQ: //go to boot loader
             	{
             		print("go to bootloader");
-            		//ROM_UpdateUART();
-            		//AppUpdaterUSB();
-            		//USBDevDisconnect(USB0_BASE);
-            		
-            		print("signal main");
+                    Delay(500);
             		jumpToBootloaderSignaled=true;
-            		//(*((void (*)(void))(*(unsigned long *)0x2c)))();
-            		//USBDDFUUpdateBegin();
-
             		break;
             	}            	
             	
@@ -265,7 +256,6 @@ void usbRxHandler(unsigned char*rev_buf)
 								rsp.msg.state = 255;
 	            		        break;
 	            		    }
-							u1printf("%v1[%d]\n\r",value);
 							rsp.msg.data[i] = value;
 						    HiAdd = HIGH((j*16+i)*2 + 1);
 	            		    LoAdd = LOW((j*16+i)*2 + 1);
@@ -278,7 +268,6 @@ void usbRxHandler(unsigned char*rev_buf)
 								rsp.msg.state = 255;
 	            		        break;
 	            		    }
-							u1printf("%v2[%d]\n\r",value);
 							rsp.msg.data[i] += value*0x100;
 							
 	            		    u1printf("%d\n\r",rsp.msg.data[i]);
@@ -306,36 +295,45 @@ void usbRxHandler(unsigned char*rev_buf)
 	                    // start a calibration and respond to host
 	                    // else, send host a warning.
 	                    {
+	                       InformFPGASetGen2Mode();
+						   Delay(3);
+						   ClearExistingCalibration();
+						   Delay(3);
+						   WriteCalibrationStatusMsg0();
+						   Delay(3);
 	    	               InfomFPGABeginCalibration();
-	    	               FPGACtrlBitSet=1;
-	    	               CALbuttonState=1;
+						   Delay(3);
 	    	               InfomFPGASetMaxBackgroundLevel(255);
-	    	               InfomFPGAGenGivenGrayScale(255,7);
-	    	               calib_status=CALST_STABLIZATION;
-	    	        
-	    	               Delay(3);
+						   Delay(3);
+	    	               InfomFPGAGenGivenGrayScale(0,0);
+						   Delay(3);
 	    	               //tell lux meter to collect 
-	    	               SendRequestToLuxmeter(255,7);
-	    	               //Delay(3);
-	    	               AutoCalibrationFromCalispector=true;
+	    	               SendRequestToLuxmeter(0,0);
+						   rsp.msgddl.function = 0;
 	                      }
 						break;
 						case 1:
 							{
-							  gUsbGetLux = rxcmd->msg.data[0];
-							  InfomFPGAGenGivenGrayScale(LOW(rxcmd->msg.data[0]),HIGH(rxcmd->msg.data[0]));
-							  SendRequestToLuxmeter(LOW(rxcmd->msg.data[0]),HIGH(rxcmd->msg.data[0]));
+							  unsigned char lo, hi;
+							  gUsbGetLux = rxcmd->msgddlreq.index;
+							  
+             				  lo=LOW(rxcmd->msgddlreq.index);
+             				  hi=HIGH(rxcmd->msgddlreq.index);
+							  u1printf("gUsbGetLux[%d] lo[%d] hi[%d]\n\r"
+							  	 ,gUsbGetLux,lo,hi);
+							  InfomFPGAGenGivenGrayScale(lo,hi);
+							  SendRequestToLuxmeter(lo,hi);
 							  return;
 							}
 							break;
 						case 2:
 							ClearExistingCalibration();
+							rsp.msgddl.function = 2;
 							break;
 						case 3:
 							rsp.msg.state = calib_status;
 							break;
-                    }
-            		//print("data sent ");           		
+                    }	
             		break;
             	}
             	

@@ -101,14 +101,13 @@ void GPIOPB3IntHandler(void)
     {
     	//already runing something
     	///add by Minghao
-        if(PowerbuttonState==0||usbIsPluged==1)
+        if(PowerbuttonState==0)
 		{
 			
-			ClearExistingCalibration();
-			
+			ClearExistingCalibration();			
 			//tell fpga to enter gen1 mode
-			if (usbIsPluged==1)
-			    InformFPGASetGen1Mode();
+			//if (usbIsPluged==1)
+			//    InformFPGASetGen1Mode();
 			
 		}
 		if (DICOMbuttonState==0&&CALbuttonState==0)
