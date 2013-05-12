@@ -504,4 +504,21 @@ void SendRequestToLuxmeter(unsigned char lo, unsigned char hi)
 	
 }
 
+void SendMaxToLuxmeter(unsigned int lux)
+{
+    unsigned char DataToMtr[6];
+    
+    DataToMtr[0]=0xFF;
+    DataToMtr[1]=0xFF;
+    DataToMtr[2]=0xFF;
+    DataToMtr[3]=0xFF;
+    DataToMtr[4]=0x01;
+    DataToMtr[5]=0x2C;
+    
+    MTR_UART0_Send(DataToMtr,6);	
+	
+	
+}
+
+
 

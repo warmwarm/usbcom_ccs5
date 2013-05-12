@@ -173,6 +173,8 @@ void TST_UART1_Send(const unsigned char *pucBuffer, unsigned int ulCount);
 void MTR_UART0_Send(const unsigned char *pucBuffer, unsigned int ulCount);
 void SendRequestToLuxmeter(unsigned char index0, unsigned char index1);
 void ProcessDataFromLuxmeter(unsigned char *pdata, unsigned int count);
+void SendMaxToLuxmeter(unsigned int lux);
+
 //extern    unsigned char rvcBuf[10];
 //extern    int rcvN;
 //extern unsigned long uart1ruan;

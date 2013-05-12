@@ -53,6 +53,7 @@ void ClearExistingCalibration()
   //if (FPGACtrlBitSet)    ///changed by minghao
   InfomFPGAEndCalibration();
   ClearCalibrationStatusMsg();
+  InformFPGASetGen1Mode();
   print("existing cal canceled");
   
 }
@@ -81,7 +82,7 @@ void ProcessDataFromLuxmeter(unsigned char *pdata, unsigned int count)
 	   if(MCUOpMode==MCU_OP_MODE_GEN1)
 	   {
           print("Gen 2, meter connected");
-	      InformFPGASetGen2Mode();
+	      //InformFPGASetGen2Mode();
 	   }
 	   //send data to windows:
 	   
@@ -176,6 +177,7 @@ void ProcessDataFromLuxmeter(unsigned char *pdata, unsigned int count)
 		    {
 		      if ((CALbuttonState)||DICOMbuttonState)
 		      {
+		        InformFPGASetGen2Mode();
 		    	calib_status=CALST_STABLIZATION;
 		    	//tell lux meter to collect 	    	
 				if(CALbuttonState)
@@ -318,13 +320,20 @@ void ProcessDataFromLuxmeter(unsigned char *pdata, unsigned int count)
 				        return;							
 					}
 					else if(DICOMbuttonState)
+						{
+						  ClearExistingCalibration();
+						  return;
+						}
+					/*
+					else if(DICOMbuttonState)
 					{
                            /// continue to monitor the backlight
 					       bl_high_tested_num=4;
 						   Delay(20);
     		               SendRequestToLuxmeter(255,7);	
 						   return;
-					}
+					}*/
+					
 					/*
 					else if (DICOMbuttonState)
 					{
@@ -338,7 +347,10 @@ void ProcessDataFromLuxmeter(unsigned char *pdata, unsigned int count)
 						
 					}*/
 					else 
-					   return;
+					{
+						ClearExistingCalibration();
+						return;
+					}
 					
 					
 					
@@ -510,7 +522,7 @@ void ProcessDataFromLuxmeter(unsigned char *pdata, unsigned int count)
     		    	 print("write lut 0");
     		    	 
     		    	 //init calibration...
-    		    	 WriteLutIndex(0,0);
+    		    	 //WriteLutIndex(0,0);
     		    	 print("write lut 0 done");
     		    	 
     		    	 PreMeasuredLux=LuxMin;
@@ -551,7 +563,7 @@ void ProcessDataFromLuxmeter(unsigned char *pdata, unsigned int count)
                   if  (fabs(lux-CurrTargetLux)<fabs(CurrTargetLux-PreMeasuredLux))
 				  {
 					//write index to CurrCalibratingDDL position
-					WriteLutIndex(CurrCalibratingDDL,index);
+					//WriteLutIndex(CurrCalibratingDDL,index);
 					
 					//report 
 				//	if (AutoCalibrationFromCalispector)
@@ -562,7 +574,7 @@ void ProcessDataFromLuxmeter(unsigned char *pdata, unsigned int count)
 				  }
 				  else
 				  {
-					WriteLutIndex(CurrCalibratingDDL,index-1);
+					//WriteLutIndex(CurrCalibratingDDL,index-1);
 					//
 					//report 
 				    //	if (AutoCalibrationFromCalispector)
@@ -576,7 +588,7 @@ void ProcessDataFromLuxmeter(unsigned char *pdata, unsigned int count)
 				  if (CurrCalibratingDDL>=255||index>=2047)//
 				  {
 				  	 //last item, we don't need to calibrate it, just write it
-				  	 WriteLutIndex(255,2047);
+				  	 //WriteLutIndex(255,2047);
 				  	 
 				  	 if (AutoCalibrationFromCalispector)
 				  	  	 SendAutoCalibrationCompleteMsg();
@@ -590,6 +602,7 @@ void ProcessDataFromLuxmeter(unsigned char *pdata, unsigned int count)
                     //to see if we need keep monitor
                     
                     //ReadFPGAStatusRegister();
+                    /*
                     if(DICOMbuttonState)
                     {
                        /// dicom mode continue to monitor the backlight
@@ -597,7 +610,7 @@ void ProcessDataFromLuxmeter(unsigned char *pdata, unsigned int count)
  	      	           bl_high_tested_num=0;
 	      	           //Delay(3);
 	      	           SendRequestToLuxmeter(255,7);	                   
-                    }
+                    }*/
                       	     
 				     return;		  	
 				  }
@@ -620,7 +633,7 @@ void ProcessDataFromLuxmeter(unsigned char *pdata, unsigned int count)
 				  if (CurrCalibratingDDL>=255||index>=2047)//
 				  {
 				  	 //last item, we don't need to calibrate it, just write it
-				  	 WriteLutIndex(255,2047);
+				  	 //WriteLutIndex(255,2047);
 				  	 
 				  	 if (AutoCalibrationFromCalispector)
 				  	  	 SendAutoCalibrationCompleteMsg();

@@ -105,7 +105,9 @@ void usbRxHandler(unsigned char*rev_buf)
             			case 0: //begin calibration
             			{
 							InformFPGASetGen1Mode();
+							Delay(3);
 							ClearExistingCalibration();
+							Delay(3);
             				InfomFPGABeginCalibration();
             				break;
             			}
@@ -115,10 +117,9 @@ void usbRxHandler(unsigned char*rev_buf)
             			case 1: // in calibration
              			{
              				//UARTSend((unsigned char *)"IN    calibration", 17);
-             				TST_UART1_Send(RxData,34);
-             				TST_UART1_Send(rev_buf,34);
+             				//TST_UART1_Send(RxData,34);
+             				//TST_UART1_Send(rev_buf,34);
              				 
-             				
              				unsigned char lo, hi;
              				lo=RxData[2];
              				hi=RxData[3];
@@ -223,7 +224,6 @@ void usbRxHandler(unsigned char*rev_buf)
             	case GOTO_BOOTLOADER_REQ: //go to boot loader
             	{
             		print("go to bootloader");
-                    Delay(500);
             		jumpToBootloaderSignaled=true;
             		break;
             	}            	
@@ -295,15 +295,17 @@ void usbRxHandler(unsigned char*rev_buf)
 	                    // start a calibration and respond to host
 	                    // else, send host a warning.
 	                    {
-	                       InformFPGASetGen2Mode();
+	                       ClearExistingCalibration();
 						   Delay(3);
-						   ClearExistingCalibration();
+	                       InformFPGASetGen2Mode();
 						   Delay(3);
 						   WriteCalibrationStatusMsg0();
 						   Delay(3);
 	    	               InfomFPGABeginCalibration();
 						   Delay(3);
 	    	               InfomFPGASetMaxBackgroundLevel(255);
+						   Delay(3);
+						   SendMaxToLuxmeter(1024);
 						   Delay(3);
 	    	               InfomFPGAGenGivenGrayScale(0,0);
 						   Delay(3);

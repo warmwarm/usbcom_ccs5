@@ -69,12 +69,13 @@ void GPIOPB3IntHandler(void)
     {
       if ((CALbuttonState)||DICOMbuttonState)
       {
+        InformFPGASetGen2Mode();
     	calib_status=CALST_STABLIZATION;
         ///add by Minghao
         ///cal mode should inform FPGA to start calibration
         ///else can not control the backlight
 		if(CALbuttonState)         
-	    {                       
+	    {  
 	       WriteCalibrationStatusMsg0();
 		   InfomFPGABeginCalibration();
 		   FPGACtrlBitSet=1;

@@ -49,7 +49,7 @@ int main(void)
    SendRequestToLuxmeter(0,0);
    Delay(1);
    u1printf("Start3\n\r");
-
+   InformFPGASetGen1Mode();
    ///add by Minghao
    backlightControlLevel = 255;
    while(!jumpToBootloaderSignaled)
