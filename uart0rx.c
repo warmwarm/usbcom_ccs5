@@ -573,7 +573,7 @@ void ProcessDataFromLuxmeter(unsigned char *pdata, unsigned int count)
 						
 				  }
 				  else
-				  {
+				  { 
 					//WriteLutIndex(CurrCalibratingDDL,index-1);
 					//
 					//report 
