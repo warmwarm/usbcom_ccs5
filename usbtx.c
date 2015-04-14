@@ -107,6 +107,19 @@ unsigned long SendLutToHost(unsigned short index,Uchar lux1,Uchar lux2,Uchar lux
 	return SendDatatoHost(rsp.raw, DEC_TO_HOST_MSG_LENGTH);
 }
 
+unsigned long SendLutRsp(Uchar cmd,Uchar state,Uchar function)
+{
+	union t_usb_cmd rsp;
+	memset(&rsp,0,sizeof(rsp));
+	rsp.msgddl.cmd = cmd + 100;
+	rsp.msgddl.state = state;
+	rsp.msgddl.function = function;
+	rsp.msgddl.index = 0;
+	rsp.msgddl.lut1 = 0;
+	rsp.msgddl.lut2 = 0;
+	rsp.msgddl.lut3 = 0;
+	return SendDatatoHost(rsp.raw, DEC_TO_HOST_MSG_LENGTH);
+}
 
 
 

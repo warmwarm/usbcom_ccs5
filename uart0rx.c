@@ -66,6 +66,18 @@ void ProcessDataFromLuxmeter(unsigned char *pdata, unsigned int count)
 	memcpy(RxData,pdata,count);
 	if (count==6)
 	{
+	   /*
+	   if(RxData[5] != CRC8_Tab(RxData,5))
+	   {   
+	        u1printf("Bad crc[%d] nead[%d]\n\r",RxData[5],CRC8_Tab(RxData,5));
+	   		return;
+	   }*/
+	   /*
+	   if((0xFF == RxData[0])&&(RxData[1] >= 0xFE))
+		{
+		   SendLutToHost(0,RxData[0],RxData[1],RxData[2]);
+		   return;
+		}*/
 	   index=RxData[0]+RxData[1]*256;
 	
 	   lux=( RxData[2]*65536 +RxData[3]*256+RxData[4])*0.01;

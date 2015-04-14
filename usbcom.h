@@ -157,6 +157,7 @@ unsigned long SendAutoCalibrationCompleteMsg();
 unsigned long SendLUTEntryMsg(Uchar ddl, unsigned long index);
 unsigned long SendLUTEntryWithLuminMsg(Uchar ddl, unsigned long index, float lumin);
 unsigned long SendLutToHost(unsigned short index,Uchar lux1,Uchar lux2,Uchar lux3);
+unsigned long SendLutToRsp(Uchar cmd,Uchar state,Uchar function);
 
 
 
@@ -174,6 +175,9 @@ void MTR_UART0_Send(const unsigned char *pucBuffer, unsigned int ulCount);
 void SendRequestToLuxmeter(unsigned char index0, unsigned char index1);
 void ProcessDataFromLuxmeter(unsigned char *pdata, unsigned int count);
 void SendMaxToLuxmeter(unsigned int lux);
+void SendMinToLuxmeter(unsigned int lux);
+unsigned char CRC8_Tab(unsigned char *p, char counter);
+
 
 //extern    unsigned char rvcBuf[10];
 //extern    int rcvN;

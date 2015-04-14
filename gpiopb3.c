@@ -67,7 +67,7 @@ void GPIOPB3IntHandler(void)
     //get interrupt, check currect status
     if(calib_status==CALST_INIT)
     {
-      if ((CALbuttonState)||DICOMbuttonState)
+      if ((CALbuttonState))
       {
         InformFPGASetGen2Mode();
     	calib_status=CALST_STABLIZATION;

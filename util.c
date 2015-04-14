@@ -160,6 +160,7 @@ void JumpToDFU()
     (*((void (*)(void))(*(unsigned long *)0x2c)))();
 	
 }
+
 void
 Delay(unsigned long ulSeconds)
 {
@@ -183,6 +184,21 @@ Delay(unsigned long ulSeconds)
         }
     }
 }
+/*
+void
+Delay(unsigned long ulSeconds)
+{
+    //
+    // Loop while there are more seconds to wait.
+    //
+    unsigned long wait = 1000;
+	wait = wait * ulSeconds;
+    while(wait--)
+    {
+        ;
+    }
+}*/
+
 
 
 

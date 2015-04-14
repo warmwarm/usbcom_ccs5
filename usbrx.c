@@ -305,8 +305,6 @@ void usbRxHandler(unsigned char*rev_buf)
 						   Delay(3);
 	    	               InfomFPGASetMaxBackgroundLevel(255);
 						   Delay(3);
-						   SendMaxToLuxmeter(1024);
-						   Delay(3);
 	    	               InfomFPGAGenGivenGrayScale(0,0);
 						   Delay(3);
 	    	               //tell lux meter to collect 
@@ -334,6 +332,36 @@ void usbRxHandler(unsigned char*rev_buf)
 							break;
 						case 3:
 							rsp.msg.state = calib_status;
+							break;
+						case 5:
+						   InformFPGASetGen2Mode();
+						   Delay(1);
+	    	               InfomFPGABeginCalibration();
+						   Delay(1);
+						   InfomFPGASetMaxBackgroundLevel(255);
+						   Delay(1);
+						   InfomFPGAGenGivenGrayScale(255,7);
+                           Delay(3);
+						   Delay(3);
+						   Delay(3);
+						   SendMaxToLuxmeter(300);
+						   ClearExistingCalibration();
+						   rsp.msgddl.function = 5;
+						   break;
+						 case 4:
+						   InformFPGASetGen2Mode();
+						   Delay(1);
+	    	               InfomFPGABeginCalibration();
+						   Delay(1);
+						   InfomFPGASetMaxBackgroundLevel(255);
+						   Delay(1);
+						   InfomFPGAGenGivenGrayScale(0,0);
+                           Delay(3);
+						   Delay(3);
+						   Delay(3);
+						   SendMinToLuxmeter(0);
+						   ClearExistingCalibration();
+						   rsp.msgddl.function = 4;
 							break;
                     }	
             		break;
