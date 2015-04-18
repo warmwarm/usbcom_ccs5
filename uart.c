@@ -1,4 +1,5 @@
 #include "usbcom.h"
+#include "i2c.h"
  
 extern tBoolean jumpToBootloaderSignaled;
 
@@ -57,7 +58,7 @@ unsigned char CRC8_Tab(unsigned char *p, char counter)
 } 
 
 
- 
+/// connect to sensor
 void InitUART0()
 {
 	
@@ -301,6 +302,10 @@ void cmdprocess(const unsigned char *pucBuffercc)
 	   	{
 	   	       ClearExistingCalibration();
 			   u1printf("cal3\n\r");
+	   	}
+	    if(strcmp(cmd,"i2c")==0)
+	   	{
+	   	       test();
 	   	}
 
 		
@@ -607,5 +612,17 @@ void SendMinToLuxmeter(unsigned int lux)
 	
 	
 }
+
+
+void InitI2C()
+{
+    // SCL:PA_0 ;  SDA:PA_1
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+	//weak pull-up
+	GPIOPadConfigSet(GPIO_PORTA_BASE, GPIO_PIN_0|GPIO_PIN_1,GPIO_STRENGTH_4MA,GPIO_PIN_TYPE_STD_WPU);
+    //output for init
+	GPIOPinTypeGPIOOutput(GPIO_PORTA_BASE, GPIO_PIN_0|GPIO_PIN_1);
+}
+
 
 

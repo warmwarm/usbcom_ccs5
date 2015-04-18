@@ -1,5 +1,6 @@
 #include "usbcom.h"
 #include "setlut.h" 
+#include "i2c.h"
  
  
 void InitAmedicomGen2System()
@@ -10,16 +11,21 @@ void InitAmedicomGen2System()
                    
    InitUART1();         
 
-         
-   InitUART0();
+   InitGPIO();
+   InitGPIOPB3();
+   InitSPI();
+
+   if(ARMSTEL_HARDWARE_DISPLAY_BOARD == GetHardwareVesion())
+   	{
+   	   //InitUART0();  for test
+	   I2C_Initial();
+   	}
+   else
+   	{
+   	   I2C_Initial();
+   	}
+
    
- 
-
-    InitGPIO();
-  InitGPIOPB3();
-
-  InitSPI();
-
    InitAmedicomGen2USBDevice();
    
  // InitTimer();

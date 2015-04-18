@@ -9,6 +9,15 @@ void InitGPIO()
     GPIOPinTypeGPIOOutput(GPIO_PORTD_BASE, GPIO_PINS );
     GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PINS );
 
+	//add by minghao 2015-04-18
+	//get hardware version
+	//Pin40 PortG_5; Pin41 PortG_4   
+	//Pin41 for version_0; Pin40 fot version_1
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOG);
+	GPIOPinTypeGPIOInput(GPIO_PORTG_BASE, GPIO_PIN_4|GPIO_PIN_5);
+	//weak pull-up
+	GPIOPadConfigSet(GPIO_PORTG_BASE, GPIO_PIN_4|GPIO_PIN_5,GPIO_STRENGTH_4MA,GPIO_PIN_TYPE_STD_WPU);
+    //end
 
     GPIOPinTypeGPIOInput(GPIO_PORTB_BASE, GPIO_PIN_3);
     GPIOIntTypeSet(GPIO_PORTB_BASE, GPIO_PIN_3, GPIO_RISING_EDGE);
@@ -20,6 +29,16 @@ void InitGPIO()
    	
 	
 }
+
+int GetHardwareVesion()
+{
+   //default vesion is 3(11);pad is 2(10)
+   int version = 3;
+   version =  GPIOPinRead(GPIO_PORTG_BASE,GPIO_PIN_4|GPIO_PIN_5);
+   version = version>>4;
+   return version;
+}
+	
 
 void SelectEEPROM()
 {

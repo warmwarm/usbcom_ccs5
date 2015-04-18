@@ -24,6 +24,7 @@
 #include "drivers/buttons.h"
 #include "drivers/formike128x128x16.h"
 #include "usbcom.h"
+#include "i2c.h"
 
 int calib_status=CALST_NIL;
 volatile tBoolean jumpToBootloaderSignaled=false;
@@ -40,18 +41,18 @@ int main(void)
 	
    calib_status=CALST_INIT;
    InitAmedicomGen2System();
-   u1printf("Start1\n\r");
-  
-   Delay(1);
-   u1printf("Start2\n\r");
-   Delay(1);
+   u1printf("Armstel firmware bootup\n\r");
 
-   SendRequestToLuxmeter(0,0);
-   Delay(1);
-   u1printf("Start3\n\r");
+   //SendRequestToLuxmeter(0,0);
+   //Delay(1);
+   
+   u1printf("hardware %d\n\r",GetHardwareVesion());
+   
    InformFPGASetGen1Mode();
+   
    ///add by Minghao
    backlightControlLevel = 255;
+   
    while(!jumpToBootloaderSignaled)
    {
 

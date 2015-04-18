@@ -289,4 +289,13 @@ unsigned long get_live_time();
 
 void PostSPI();
 
+//Get hardware version; add by minghao
+#define ARMSTEL_HARDWARE_DISPLAY_BOARD 3
+#define ARMSTEL_HARDWARE_PAD_BOARD 2
+int GetHardwareVesion();
+
+
+void InitI2C();
+
+
 #endif /*USBCOM_H_*/
