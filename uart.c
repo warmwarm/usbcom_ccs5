@@ -308,33 +308,6 @@ void cmdprocess(const unsigned char *pucBuffercc)
 	   	       test();
 	   	}
 
-		
-	   /*
-        else
-	    if(strcmp(cmd,"lux")==0)
-	 	{
-	 	   u1printf("lux index %d lux %f\n\r",index,lux);
-	 	   lux = lux*100;
-	 	   u1buf[0] = index % 256;
-		   u1buf[1] = index / 256;
-		   u1buf[4] = (char)((int)lux%256);
-		   u1buf[3] = (char)((int)lux/256%256);
-		   u1buf[2] = (char)((int)lux/256/256);
-		   ProcessDataFromLuxmeter(u1buf,6);
-	 	}
-        else
-        	{
-        	    index = 0;
-				lux = 100;
-        	   	 	   lux = lux*100;
-	 	   u1buf[0] = index % 256;
-		   u1buf[1] = index / 256;
-		   u1buf[4] = (char)((int)lux%256);
-		   u1buf[3] = (char)((int)lux/256%256);
-		   u1buf[2] = (char)((int)lux/256/256);
-		   ProcessDataFromLuxmeter(u1buf,6);
-        	}
-	*/
 }
  
 //*****************************************************************************

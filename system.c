@@ -18,11 +18,11 @@ void InitAmedicomGen2System()
    if(ARMSTEL_HARDWARE_DISPLAY_BOARD == GetHardwareVesion())
    	{
    	   //InitUART0();  for test
-	   I2C_Initial();
+	   InitALS();
    	}
    else
    	{
-   	   I2C_Initial();
+   	   InitALS();
    	}
 
    

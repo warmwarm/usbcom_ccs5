@@ -273,11 +273,12 @@ void Delay_us(unsigned long nValue)//微秒为单位，8MHz为主时钟
 }
 
 //设备码 0x48
-void readByte(int addr,char pBuf[])
+char readByte(int addr)
 {
     char low;
     int j;
 	int tmp = 0;
+	char data = 0;
     //地址
     low = (char)(addr & 0xff);
     
@@ -290,72 +291,27 @@ void readByte(int addr,char pBuf[])
     //发送高地址
     I2C_TxHToL(low);	
     // 等待 ACK
-    I2C_GetACK();    
+    tmp = tmp +I2C_GetACK();    
 	I2C_STOP();
-	for(j = 50;j > 0;j--);
+	for(j = 10;j > 0;j--);
     // 启动数据总线
     I2C_START();	
     // 发送读命令
     I2C_TxHToL(0x49);	
     // 等待 ACK
-    I2C_GetACK();	
+    tmp = tmp +I2C_GetACK();	
     //读一个数据
-    pBuf[0] = I2C_RxHToL();
+    data = I2C_RxHToL();
     //设置NAK
     I2C_SetNAk();
     // 停止总线
     I2C_STOP();
-    u1printf("ack %d\n\r",tmp);
-    return;
+    //u1printf("ack %d\n\r",tmp);
+    return data;
 }
 
-void readPage(int addr,int count,char pBuf[])
-{
-    char low;
-    int j;
-	int tmp = 0;
-    //地址
-    low = (char)(addr & 0xff);
-    
-    // 启动数据总线
-    I2C_START();			
-    // 发送写命令
-    I2C_TxHToL(0x48);			
-    // 等待 ACK
-    tmp = I2C_GetACK();	
-    //发送高地址
-    I2C_TxHToL(low);	
-    // 等待 ACK
-    I2C_GetACK();    
-	I2C_STOP();
-	for(j = 50;j > 0;j--);
-    // 启动数据总线
-    I2C_START();	
-    // 发送读命令
-    I2C_TxHToL(0x49);	
-    // 等待 ACK
-    I2C_GetACK();	
-	for(j=0;j<count;j++)
-	{
-      //读一个数据
-      pBuf[j] = I2C_RxHToL();
-      //设置NAK
-      if(j<count -1)
-      	{
-      	  I2C_SetACK();
-      	}
-	  else
-	  	{
-	      I2C_SetNAk();
-	  	}
-	}
-    // 停止总线
-    I2C_STOP();
-    u1printf("ack %d\n\r",tmp);
-    return;
-}
 
-void writeByte(int addr,char pBuf[])
+void writeByte(int addr,char data)
 {
 
     char low;
@@ -372,40 +328,49 @@ void writeByte(int addr,char pBuf[])
     //发送地址
     I2C_TxHToL(low);	
     // 等待 ACK
-    I2C_GetACK();
+    tmp = tmp +I2C_GetACK();
     //写入数据
-    I2C_TxHToL(pBuf[0]);
+    I2C_TxHToL(data);
     // 等待 ACK
-    I2C_GetACK();
+    tmp = tmp +I2C_GetACK();
     // 停止总线
     I2C_STOP();	
-    u1printf("ack %d\n\r",tmp);
+    //u1printf("ack %d\n\r",tmp);
     return;
 }
 
 
+void InitALS(void)
+{
+	I2C_Initial();
+	
+    writeByte(1,0x00);//Disable and Power down
+	writeByte(2,0x00);//Clear all interrupt flag
+	writeByte(0x0e,0x00);//Initialize reset registers
+
+	writeByte(5,0x00);//disable ALS interrupt
+	writeByte(6,0xf0);
+	writeByte(7,0xff);
+	writeByte(1,0x06);//enable ALS
+}
+
+int GetALSValue(void)
+{
+    int value = 0;
+	char tmp = 0;
+	tmp= readByte(0x0a);
+	value = tmp;
+	tmp = readByte(0x09);
+
+	value = value * 0x100 + tmp;
+	return value;
+}
+
 void test(void)
 {
-    char puf[8] = {0};
-    int i= 0;
-	/*
-    for(i=0;i<50;i++)
-    	{
-    	
-	I2C_Set_sda_high();
-	I2C_Set_sck_high();
-	Delay(1);
-	I2C_Set_sda_low();
-	I2C_Set_sck_low();
-	Delay(1);
-    	}
-    	*/
-    //writeByte(0x0e,0x55);
-	//Delay_ms(100);
-	readByte(0x00,puf);
-	u1printf("i2c test 0x%x\n\r",puf[0]);
-	readByte(0x01,puf);
-	u1printf("i2c test 0x%x\n\r",puf[0]);
+
+	u1printf("ALS %d\n\r",GetALSValue());
 }
+
 	
 

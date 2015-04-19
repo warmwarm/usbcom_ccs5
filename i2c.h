@@ -16,5 +16,9 @@ int  I2C_RxHToL(void);
 void Delay_ms(unsigned long nValue);
 void Delay_us(unsigned long nValue);
 
+void InitALS(void);
+int GetALSValue();
+
 void test(void);
+
 
