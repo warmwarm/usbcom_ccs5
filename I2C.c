@@ -8,19 +8,33 @@
 
 #define I2CPORT GPIO_PORTA_BASE
 
-void I2C_Initial( void )
+
+void Delay_ms(unsigned long nValue)//毫秒为单位，8MHz为主时钟
 {
-    // SCL:PA_0 ;  SDA:PA_1
-	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
-	//weak pull-up
-	GPIOPadConfigSet(I2CPORT, SCL|SDA,GPIO_STRENGTH_4MA,GPIO_PIN_TYPE_STD_WPU);
-    //将SCL管脚设置为输出管脚
-    GPIOPinTypeGPIOOutput(I2CPORT, SCL|SDA);		
-    I2C_Set_sck_low();
-    I2C_STOP();
-    Delay_ms(10);
+    unsigned long nCount;
+    int i;
+    unsigned long j;
+    nCount = 2667;
+    for(i = nValue;i > 0;i--)
+    {
+    	for(j = nCount;j > 0;j--);
+    }
     return;
 }
+void Delay_us(unsigned long nValue)//微秒为单位，8MHz为主时钟
+{
+    int nCount;
+    int i;
+    int j;
+    nCount = 3;
+    for(i = nValue;i > 0;i--)
+    {
+    	for(j = nCount;j > 0;j--);
+    }
+    return;
+}
+
+
 void I2C_Set_sda_high( void )
 {
     //将SDA设置为输出模式
@@ -187,6 +201,22 @@ void I2C_TxLToH(int nValue)
     I2C_Set_sck_low();
     return;
 }
+
+
+void I2C_Initial( void )
+{
+    // SCL:PA_0 ;  SDA:PA_1
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+	//weak pull-up
+	GPIOPadConfigSet(I2CPORT, SCL|SDA,GPIO_STRENGTH_4MA,GPIO_PIN_TYPE_STD_WPU);
+    //将SCL管脚设置为输出管脚
+    GPIOPinTypeGPIOOutput(I2CPORT, SCL|SDA);		
+    I2C_Set_sck_low();
+    I2C_STOP();
+    Delay_ms(10);
+    return;
+}
+
 /////////////////////////////////////////////
 // 接收是从 LSB 到 MSB 的顺序
 int  I2C_RxByte(void)
@@ -247,30 +277,7 @@ int  I2C_RxHToL(void)
     return nTemp;
 }
 
-void Delay_ms(unsigned long nValue)//毫秒为单位，8MHz为主时钟
-{
-    unsigned long nCount;
-    int i;
-    unsigned long j;
-    nCount = 2667;
-    for(i = nValue;i > 0;i--)
-    {
-    	for(j = nCount;j > 0;j--);
-    }
-    return;
-}
-void Delay_us(unsigned long nValue)//微秒为单位，8MHz为主时钟
-{
-    int nCount;
-    int i;
-    int j;
-    nCount = 3;
-    for(i = nValue;i > 0;i--)
-    {
-    	for(j = nCount;j > 0;j--);
-    }
-    return;
-}
+
 
 //设备码 0x48
 char readByte(int addr)
@@ -340,38 +347,7 @@ void writeByte(int addr,char data)
 }
 
 
-void InitALS(void)
-{
-	I2C_Initial();
-	
-    writeByte(1,0x00);//Disable and Power down
-	writeByte(2,0x00);//Clear all interrupt flag
-	writeByte(0x0e,0x00);//Initialize reset registers
 
-	writeByte(5,0x00);//disable ALS interrupt
-	writeByte(6,0xf0);
-	writeByte(7,0xff);
-	writeByte(1,0x06);//enable ALS
-}
-
-float GetALSValue(void)
-{
-    float value = 0;
-	char tmp = 0;
-	tmp= readByte(0x0a);
-	value = tmp;
-	tmp = readByte(0x09);
-
-	value = value * 0x100 + tmp;
-	value = value/4095 * 2000;
-	return value;
-}
-
-void test(void)
-{
-
-	u1printf("ALS %f\n\r",GetALSValue());
-}
 
 	
 

@@ -1,6 +1,6 @@
 #include "usbcom.h"
 #include "setlut.h" 
-#include "i2c.h"
+#include "ALSensor.h"
  
  
 void InitAmedicomGen2System()

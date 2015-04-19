@@ -1,5 +1,6 @@
 #include "usbcom.h"
-#include "i2c.h"
+#include "ALSensor.h"
+
  
 extern tBoolean jumpToBootloaderSignaled;
 
@@ -305,7 +306,7 @@ void cmdprocess(const unsigned char *pucBuffercc)
 	   	}
 	    if(strcmp(cmd,"i2c")==0)
 	   	{
-	   	       test();
+	   	       ALTest();
 	   	}
 
 }
