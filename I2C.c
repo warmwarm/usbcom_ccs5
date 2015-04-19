@@ -354,22 +354,23 @@ void InitALS(void)
 	writeByte(1,0x06);//enable ALS
 }
 
-int GetALSValue(void)
+float GetALSValue(void)
 {
-    int value = 0;
+    float value = 0;
 	char tmp = 0;
 	tmp= readByte(0x0a);
 	value = tmp;
 	tmp = readByte(0x09);
 
 	value = value * 0x100 + tmp;
+	value = value/4095 * 2000;
 	return value;
 }
 
 void test(void)
 {
 
-	u1printf("ALS %d\n\r",GetALSValue());
+	u1printf("ALS %f\n\r",GetALSValue());
 }
 
 	
