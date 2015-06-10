@@ -71,6 +71,11 @@ void usbRxHandler(unsigned char*rev_buf)
 		rsp.msg.state = 1;
             switch (signal)
             {
+                case GET_EVN_LUX:
+                {
+                   GetALSRawData(rsp.msgstr.str);
+                   break;
+                }
             	case WRITE_LUT_REQ:  //write  LUT to EEPROM
             	{
             		u1printf("setting lut0 index[%d]\n\r",state);

@@ -117,48 +117,6 @@ void GPIOPB3IntHandler(void)
 		}   	
     }
     
-    
-    
-    
-    //GPIOPinIntEnable(GPIO_PORTB_BASE, GPIO_PIN_3);
-  
-    
-  
- 
-/* 
-    //UARTSend((unsigned char *)"$", 1);
-    
-    if (calib_status==NIL_CALIB)//ok, user pushed button, we start calibration
-    {
-    calib_status=NIL_CALIB;
-    if (calib_status==NIL_CALIB)//ok, user pushed button, we start calibration
-    {
-    	calib_status=BL_CTRL_HIGH;//change state
-    	
-    	//inform FPGA to generate lowest ddl 2048
-    	
-    	InfomFPGABeginCalibration(); 
-    	
-    	getMaxBacklightLevel();
-    	//InfomFPGASetMaxBackgroundLevel(DEFAULT_BACKLIGHT_CONTROL_LEVEL);
-    	InfomFPGASetMaxBackgroundLevel(backlightControlLevel);
-    	InfomFPGAGenGivenGrayScale(255,7);
-    	
-    
-    	
-    	//tell lux meter to collect luminance
-    	SendRequestToLuxmeter(255,7);
-    	bl_high_tested_num=0;
-    	 
-    	
-    }
-
-    	 
-    	
-    }
-
- */
-   
 
   
 }

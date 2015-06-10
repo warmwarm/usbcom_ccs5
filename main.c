@@ -34,7 +34,7 @@ volatile extern int gUsbGetLux;
 
 int main(void)
 {
-	unsigned int mindex = 0;
+
 	gUsbGetLux = -1;
    ROM_SysTickPeriodSet(ROM_SysCtlClockGet());
    ROM_SysTickEnable();	
@@ -44,27 +44,23 @@ int main(void)
    u1printf("Armstel firmware bootup\n\r");
 
    //SendRequestToLuxmeter(0,0);
-   //Delay(1);
-   
+
    u1printf("hardware %d\n\r",GetHardwareVesion());
    
    InformFPGASetGen1Mode();
    
    ///add by Minghao
    backlightControlLevel = 255;
-   
+
+   Delay_ms(500);//delay for pad to power up
    while(!jumpToBootloaderSignaled)
    {
-
-     ///when usb pluged,change mode to Gen1
-	 //if(usbIsPluged&&(MCUOpMode==MCU_OP_MODE_GEN2))
-	 //{
-	 //   ClearExistingCalibration();
-	 //	InformFPGASetGen1Mode();
-	 //}
-	 Delay(5);
+	 //Delay(5);
+	 CheckDICOMButton();
+	 Uart1_ProcessCmd();
    }
    u1printf("jump to boot loader\n\r");
+   Delay(50);
    JumpToDFU();
 
    EnterInfiniteLoop();	

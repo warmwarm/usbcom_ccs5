@@ -27,6 +27,17 @@ float GetALSValue(void)
 	return value;
 }
 
+void GetALSRawData(char * pbuf)
+{
+	if(0 == pbuf)
+	{
+	    return ;
+	}
+	pbuf[0] = readByte(0x09);
+	pbuf[1] = readByte(0x0a);
+	return;
+}
+
 void ALTest(void)
 {
 

@@ -118,6 +118,7 @@ extern int calib_status;
 #define GET_FPGA_VERSION_REQ  18
 #define GET_LC_VERSION_REQ  19
 #define GET_HW_VERSION_REQ  20
+#define GET_EVN_LUX 21
 
 
 #define WRITE_LUT_RSP 100
@@ -141,6 +142,7 @@ extern int calib_status;
 #define GET_FPGA_VERSION_RSP  118
 #define GET_LC_VERSION_RSP  119
 #define GET_HW_VERSION_RSP  120
+#define GET_EVN_LUX_RSP 121
 
 
 #define DICOM_EVENT_REPORT 150
@@ -294,8 +296,11 @@ void PostSPI();
 #define ARMSTEL_HARDWARE_PAD_BOARD 2
 int GetHardwareVesion();
 
+void Uart1_ProcessCmd(void);
 
-void InitI2C();
+void CheckDICOMButton();
+void ToggleFPGA_DICOM();
+
 
 
 #endif /*USBCOM_H_*/

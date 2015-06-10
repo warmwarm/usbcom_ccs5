@@ -278,7 +278,7 @@ HIDAmedicomGen2RxHandler(void *pvCBData, unsigned long ulEvent,
             // the ulMsgValue parameter in this case.  Set the report pointer
             // in *pvMsgData and return the length of the report in bytes.
             //
-            print(" GET_REPORT ");
+            //print(" GET_REPORT ");
             *(unsigned char **)pvMsgData = tx;
             return (8);
         }
@@ -292,7 +292,7 @@ HIDAmedicomGen2RxHandler(void *pvCBData, unsigned long ulEvent,
             //
             // We have nothing to do here.
             //
-            print(" REPORT_SENT ");
+            //print(" REPORT_SENT ");
             break;
         }
         

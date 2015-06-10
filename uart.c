@@ -7,6 +7,10 @@ extern tBoolean jumpToBootloaderSignaled;
 extern Uchar FPGA_CTL;
 extern long FPGAStatus;
 
+#define UART1_BUFF_LENGTH 128
+static int Uart1_indicator;
+static int Uart1_rcvN;
+static unsigned char Uart1_rvcBuf[UART1_BUFF_LENGTH];
 
 const unsigned char  CRC8_Table[256] = 
 {
@@ -49,7 +53,8 @@ const unsigned char  CRC8_Table[256] =
 unsigned char CRC8_Tab(unsigned char *p, char counter)  
 {
 	unsigned char crc8 = 0; 
-	for( counter > 0;counter--;)
+	char i = 0;
+	for(i = 0; i < counter;i++)
 	{   
     	crc8 = CRC8_Table[crc8^*p]; //查表得到CRC码  
   		p++; 
@@ -139,7 +144,9 @@ void InitUART1()
     
      //MTR_UART1  
 	
-	
+	Uart1_indicator = 0;
+	Uart1_rcvN = 0;
+	memset(Uart1_rvcBuf,0,sizeof(Uart1_rvcBuf));
 }
 
  
@@ -451,10 +458,7 @@ void
 TST_UART1_IntHandler(void)
 {
     unsigned long ulStatus;
-    static unsigned char rvcBuf[100] = {0}; //Jimmy: change1: from 5 to 100.
     unsigned char c;
-    static int rcvN=0;
-    int cmd = 0;
     //
     // Get the interrupt status.
     //
@@ -471,7 +475,10 @@ TST_UART1_IntHandler(void)
     // Loop while there are characters in the receive FIFO.
     //
     
-    
+    if(0 != Uart1_indicator)
+    	{
+    		return;
+    	}
     
     while(UARTCharsAvail(UART1_BASE))
     {
@@ -480,61 +487,43 @@ TST_UART1_IntHandler(void)
         // Read the next character from the UART and write it back to the UART.
         //
         //ROM_UARTCharPutNonBlocking(UART1_BASE,ROM_UARTCharGetNonBlocking(UART1_BASE));
-        
-        c = UARTCharGetNonBlocking(UART1_BASE);
-        /*if (c == '\n')
+        if(Uart1_rcvN >= UART1_BUFF_LENGTH)
         {
-           rvcBuf[0]='A';
-           rvcBuf[1]='r';
-           rvcBuf[2]='m';
-           rvcBuf[3]='s';
-           rvcBuf[4]='t';
-           rvcBuf[5]='e';
-           rvcBuf[6]='l';
-           rvcBuf[7]='>';
-           rcvN = 8;
-        }*/
-
-        rvcBuf[rcvN] = c;
-        rcvN++;
+        	u1printf("\n\r");
+        	Uart1_indicator = 1;
+        	break;
+        }
+        c = UARTCharGetNonBlocking(UART1_BASE);
+		
+        Uart1_rvcBuf[Uart1_rcvN] = c;
+        Uart1_rcvN++;
         u1printf("%c",c);
         if(c == 13)
         {
         	u1printf("\n\r");
-        	cmd = 1;
+        	Uart1_indicator = 1;
            break;
         }
 
     }
     
+    //Uart1_ProcessCmd();
 
-   /*
-    unsigned char DataToMtr[6];
-    
-    DataToMtr[0]=0;
-    DataToMtr[1]=0;
-    DataToMtr[2]=0;
-    DataToMtr[3]=0;
-    DataToMtr[4]=0;
-    DataToMtr[5]=0;
-    
-    MTR_UART0_Send(DataToMtr,6);
-      
-    */
-    //MTR_UART0_Send("data sent to meter",12);
-    //TST_UART1_Send(rvcBuf,rcvN);
-  
-     
-   //TST_UART1_Send(rvcBuf,rcvN);  //Jimmy: change3: from commented to uncommented.
-   if(1 == cmd)
-   	{
-   	    cmdprocess(rvcBuf);
-		memset(rvcBuf,0,sizeof(rvcBuf));
-		rcvN = 0;
-   	}
 	
 	
 }  
+
+void Uart1_ProcessCmd(void)
+{
+	if(1 == Uart1_indicator)
+   	{
+   	    cmdprocess(Uart1_rvcBuf);
+		memset(Uart1_rvcBuf,0,sizeof(Uart1_rvcBuf));
+		Uart1_rcvN = 0;
+		Uart1_indicator = 0;
+   	}
+	
+}
 
 
 //
@@ -585,17 +574,6 @@ void SendMinToLuxmeter(unsigned int lux)
     MTR_UART0_Send(DataToMtr,6);	
 	
 	
-}
-
-
-void InitI2C()
-{
-    // SCL:PA_0 ;  SDA:PA_1
-	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
-	//weak pull-up
-	GPIOPadConfigSet(GPIO_PORTA_BASE, GPIO_PIN_0|GPIO_PIN_1,GPIO_STRENGTH_4MA,GPIO_PIN_TYPE_STD_WPU);
-    //output for init
-	GPIOPinTypeGPIOOutput(GPIO_PORTA_BASE, GPIO_PIN_0|GPIO_PIN_1);
 }
 
 

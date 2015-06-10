@@ -22,7 +22,11 @@ long ReadFPGAStatusRegister()
 
   //TST_UART1_Send(&u,2);
   FPGAStatus=u;
-  u1printf("FPGAStatus :%x\n\r",FPGAStatus);
+  if(FPGAStatus > 0)
+  	{
+  		u1printf("FPGAStatus :%x\n\r",FPGAStatus);
+  	}
+  
   return 1;
 }
 
