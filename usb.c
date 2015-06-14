@@ -196,12 +196,13 @@ static unsigned long
 HIDAmedicomGen2TxHandler(void *pvCBData, unsigned long ulEvent,
                   unsigned long ulMsgData, void *pvMsgData)
 {
-	
+    u1printf("rxevent :%x \n\r",ulEvent);
     switch (ulEvent)
     {
+         
     	case USB_EVENT_TX_COMPLETE:
         {
-        	//print("usb tx: sent complete");
+        	print("usb tx: sent complete");
         	//USBDHIDReportWrite(&g_sHIDAmedicomGen2Device,tx,8,0);
         	//Delay(10);
         	break;
@@ -279,6 +280,7 @@ HIDAmedicomGen2RxHandler(void *pvCBData, unsigned long ulEvent,
             // in *pvMsgData and return the length of the report in bytes.
             //
             //print(" GET_REPORT ");
+			GetALSRawData(tx);
             *(unsigned char **)pvMsgData = tx;
             return (8);
         }
