@@ -29,7 +29,7 @@ void GPIOPB3IntHandler(void)
     //
     // Clear the GPIO interrupt.
  
-    GPIOPinIntClear(GPIO_PORTB_BASE, GPIO_PIN_3);
+    GPIOPinIntClear(GPIO_PORTB_BASE, GPIO_PIN_7);
     //GPIOPinIntDisable(GPIO_PORTB_BASE, GPIO_PIN_3);
 
     u1printf("GPIOPB3IntHandler: \n\r");
@@ -41,6 +41,8 @@ void GPIOPB3IntHandler(void)
     else
     	DICOMbuttonState=0;
     
+    CALbuttonState=0;
+    /*
     if (CALButtonPressed())
     {
     	CALbuttonState=1;
@@ -50,7 +52,7 @@ void GPIOPB3IntHandler(void)
 	else
 	{
 	    CALbuttonState=0;      //add by Minghao
-	}
+	}*/
     
     if(PoweronPressed())
     {

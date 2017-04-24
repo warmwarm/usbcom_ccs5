@@ -212,7 +212,7 @@ void WriteCalibrationStatusMsg0();
 void WriteCalibrationStatusMsg1();
 void WriteCalibrationStatusMsg2();
 void ClearCalibrationStatusMsg();
-
+void WriteFPGAData(char da);
 
 
 //SPI

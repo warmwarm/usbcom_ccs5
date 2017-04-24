@@ -2,6 +2,7 @@
 #include "usbsig.h"
 
 extern int calib_status;
+extern int usb_cal;
 extern int bl_low_tested_num;
 extern int bl_high_tested_num;
 extern volatile tBoolean jumpToBootloaderSignaled;
@@ -109,6 +110,7 @@ void usbRxHandler(unsigned char*rev_buf)
             		{
             			case 0: //begin calibration
             			{
+							usb_cal = 1;
 							InformFPGASetGen1Mode();
 							Delay(3);
 							ClearExistingCalibration();
@@ -139,7 +141,7 @@ void usbRxHandler(unsigned char*rev_buf)
              			{
             				
             				InfomFPGAEndCalibration(); 
-             				
+             				usb_cal = 0;
             				break;
             			}           			
             			
@@ -402,7 +404,19 @@ void usbRxHandler(unsigned char*rev_buf)
 	            }  
 				case SET_DICOM_STATUS_REQ:
             	{
-					//need to add FPGA command
+            		switch (state)
+            		{
+            		          case 0: //DICOM OFF
+            		          {
+            		            DICOM_OFF();
+            		            break;
+            		          }
+            		          case 1: //DICOM ON
+            		          {
+            		        	DICOM_ON();
+            		        	break;
+            		          }
+            		};
             		break;
 	            }  
 				case GET_DICOM_STATUS_REQ:

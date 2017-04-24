@@ -63,6 +63,8 @@ void ProcessDataFromLuxmeter(unsigned char *pdata, unsigned int count)
 	unsigned char RxData[6];
 	unsigned long index;
 	float lux;
+return; //remove for pad version wmh
+	
 	memcpy(RxData,pdata,count);
 	if (count==6)
 	{

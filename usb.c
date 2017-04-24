@@ -1,5 +1,6 @@
 #include "usbcom.h"
 
+extern int usb_cal;
 
 //*****************************************************************************
 //
@@ -272,6 +273,9 @@ HIDAmedicomGen2RxHandler(void *pvCBData, unsigned long ulEvent,
         // is asking for the latest version to transmit.
         //
         case USBD_HID_EVENT_IDLE_TIMEOUT:
+		{
+			break;
+        }
         case USBD_HID_EVENT_GET_REPORT:
         {
             //
@@ -280,6 +284,10 @@ HIDAmedicomGen2RxHandler(void *pvCBData, unsigned long ulEvent,
             // in *pvMsgData and return the length of the report in bytes.
             //
             //print(" GET_REPORT ");
+            if(1 == usb_cal)
+            {
+               return 0;
+            }
 			GetALSRawData(tx);
             *(unsigned char **)pvMsgData = tx;
             return (8);

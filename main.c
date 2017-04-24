@@ -26,7 +26,10 @@
 #include "usbcom.h"
 #include "i2c.h"
 
+
 int calib_status=CALST_NIL;
+int usb_cal=0;
+
 volatile tBoolean jumpToBootloaderSignaled=false;
 extern int MCUOpMode;
 extern long usbIsPluged;
@@ -34,13 +37,14 @@ volatile extern int gUsbGetLux;
 
 int main(void)
 {
-
+	Delay_ms(200);
 	gUsbGetLux = -1;
    ROM_SysTickPeriodSet(ROM_SysCtlClockGet());
    ROM_SysTickEnable();	
 	
    calib_status=CALST_INIT;
    InitAmedicomGen2System();
+
    u1printf("Armstel firmware bootup\n\r");
 
    //SendRequestToLuxmeter(0,0);

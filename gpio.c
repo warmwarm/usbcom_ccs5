@@ -1,4 +1,5 @@
 #include "usbcom.h"
+#include "i2c2.h"
 
 void InitGPIO()
 {
@@ -26,24 +27,45 @@ void InitGPIO()
     //pin74 PE0 is the FPGA's DICOM state
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
     GPIOPinTypeGPIOInput(GPIO_PORTE_BASE, GPIO_PIN_2|GPIO_PIN_0);
-	GPIOPinTypeGPIOOutput(GPIO_PORTE_BASE, GPIO_PIN_7);
-	GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_7,0xFF);
+	GPIOPinTypeGPIOOutput(GPIO_PORTE_BASE, GPIO_PIN_7|GPIO_PIN_6);
+	GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_7|GPIO_PIN_6,0xFF);
+	//PIN6 is cal in pad
 	//end 2015-06-10
 
-    GPIOPinTypeGPIOInput(GPIO_PORTB_BASE, GPIO_PIN_3);
-    GPIOIntTypeSet(GPIO_PORTB_BASE, GPIO_PIN_3, GPIO_RISING_EDGE);
-    GPIOPinIntEnable(GPIO_PORTB_BASE, GPIO_PIN_3);
-    IntEnable(INT_GPIOB);
+	GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_2|GPIO_PIN_0,0xFF);
+
+    //GPIOPinTypeGPIOInput(GPIO_PORTB_BASE, GPIO_PIN_3);
+    //GPIOIntTypeSet(GPIO_PORTB_BASE, GPIO_PIN_3, GPIO_RISING_EDGE);
+    //GPIOPinIntEnable(GPIO_PORTB_BASE, GPIO_PIN_3);
+    //IntEnable(INT_GPIOB);
     
     GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PINS,0x00);
     
+    //Version3 need to reset FPGA
+    if(3 == GetHardwareVesion())
+    {
+    	u1printf("init clk\n\r");
+    	//GPIOPinConfigure(GPIO_PF1_T0CCP1);
+
+    	GPIOPinTypeGPIOOutput(GPIO_PORTE_BASE, GPIO_PIN_7|GPIO_PIN_1);
+    	GPIODirModeSet(GPIO_PORTE_BASE,GPIO_PIN_1,GPIO_DIR_MODE_OUT);
+    	GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_1,0x00);
+
+    	Delay_ms(100);
+    	GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_1,0xFF);
+    	initclk();
+
+    }
+
 }
+
 
 
 // 1 for no DICOM
 //0 for DICOM
 int GetDICOMButton()
 {
+
      int state = 1;
 	 state = GPIOPinRead(GPIO_PORTE_BASE,GPIO_PIN_2);
 	 if(state > 0)
@@ -65,6 +87,7 @@ int GetFPGA_DICOM()
 		}
 	return state;
 }
+
 
 void ToggleFPGA_DICOM()
 {

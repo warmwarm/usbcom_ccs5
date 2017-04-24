@@ -1,7 +1,7 @@
 #include "usbcom.h"
 #include "setlut.h" 
 #include "ALSensor.h"
- 
+
  
 void InitAmedicomGen2System()
 {
@@ -14,6 +14,7 @@ void InitAmedicomGen2System()
    InitGPIO();
    InitGPIOPB3();
    InitSPI();
+
 
    if(ARMSTEL_HARDWARE_DISPLAY_BOARD == GetHardwareVesion())
    	{

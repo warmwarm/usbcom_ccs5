@@ -30,6 +30,8 @@ long ReadFPGAStatusRegister()
   return 1;
 }
 
+
+
 long DICOMButtonPressed()
 {
   return FPGAStatus&0x01;
@@ -47,6 +49,7 @@ long PoweronPressed()
 
 void InfomFPGABeginCalibration()
 {
+u1printf("InfomFPGABeginCalibration\n\r");
   //P0=0;
   GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PINS,0x00);
 
@@ -65,7 +68,7 @@ void InfomFPGABeginCalibration()
 
 void InfomFPGAGenGivenGrayScale(unsigned char lo, unsigned char hi)
 {
-
+u1printf("InfomFPGAGenGivenGrayScale\n\r");
   // P0=1;
   GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PINS,0x01);
 
@@ -94,6 +97,7 @@ void InfomFPGAGenGivenGrayScale(unsigned char lo, unsigned char hi)
 
 void InfomFPGAEndCalibration()
 {
+u1printf("InfomFPGAEndCalibration\n\r");
    FPGA_CTL = FPGA_CTL & 0xFE;
    //P0=0;
    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PINS,0x0);
@@ -110,10 +114,11 @@ void InfomFPGAEndCalibration()
 
 // percentage: set background light to the percentage of existing back lignt.
 // for example if existing max limuinance is 400, we want to decrease it to 320,
-// then we call InfomFPGASetMaxBackgroundLevel(80) because 400×80%=320.
+// then we call InfomFPGASetMaxBackgroundLevel(80) because 4000%=320.
 // Acceptable input value of percentage is from 0 to 200.
 void InfomFPGASetMaxBackgroundLevel(unsigned char level)
 {
+u1printf("InfomFPGASetMaxBackgroundLevel\n\r");
   //Ray, Pease finish this function implementation
   // P0=2;
   GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PINS,0x03);
@@ -152,7 +157,7 @@ void InformFPGASetGen1Mode()
 
 void InformFPGASetGen2Mode()
 {
-    u1printf("V2 mode\n\r");
+   u1printf("V2 mode\n\r");
 	MCUOpMode=MCU_OP_MODE_GEN2;  ///add by Minghao change MCU mode flag
     FPGA_CTL=FPGA_CTL |  0x02;
     //P0=0;
@@ -171,6 +176,7 @@ void InformFPGASetGen2Mode()
 
 void InformFPGAReleaseEEPROM()
 {
+u1printf("InformFPGAReleaseEEPROM\n\r");
    FPGA_CTL=FPGA_CTL |  0x04;
 
    //P0=0;
@@ -188,6 +194,7 @@ void InformFPGAReleaseEEPROM()
 
 void InformFPGATakeEEPROM()
 {
+u1printf("InformFPGATakeEEPROM\n\r");
    FPGA_CTL=FPGA_CTL &  0xFB;
    //P0=0;
    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PINS,0x00);
@@ -211,7 +218,7 @@ void InformFPGAReleasePushbutton()
 //below function are used to control the screen message display
 void WriteCalibrationStatusMsg0()
 {
-
+u1printf("WriteCalibrationStatusMsg0\n\r");
   GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PINS,0x05);
   
   GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PINS,0xFB);
@@ -226,6 +233,7 @@ void WriteCalibrationStatusMsg0()
 
 void WriteCalibrationStatusMsg1()
 {
+ u1printf("WriteCalibrationStatusMsg1\n\r");
   GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PINS,0x05);
 
   GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PINS,0xFE);
@@ -238,6 +246,7 @@ void WriteCalibrationStatusMsg1()
 
 void WriteCalibrationStatusMsg2()
 { 
+u1printf("WriteCalibrationStatusMsg2\n\r");
    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PINS,0x05);
 
    GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PINS,0xFD);
@@ -251,6 +260,7 @@ void WriteCalibrationStatusMsg2()
 
 void ClearCalibrationStatusMsg()
 {
+u1printf("ClearCalibrationStatusMsg\n\r");
    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PINS,0x05);
 
    GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PINS,0xFF);
@@ -263,5 +273,10 @@ void ClearCalibrationStatusMsg()
 }
 
 
+void WriteFPGAData(char da)
+{
+
+   GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PINS,da);
+}
 
 

@@ -1,5 +1,6 @@
 #include "usbcom.h"
 #include "ALSensor.h"
+#include "i2c2.h"
 
  
 extern tBoolean jumpToBootloaderSignaled;
@@ -127,7 +128,7 @@ void InitUART1()
     //                                                                       
     // Configure the UART for 115,200, 8-N-1 operation.                      
     //                                                                       
-    UARTConfigSetExpClk(UART1_BASE, ROM_SysCtlClockGet(), 115200,//115200,   //Jimmy: change1: from 1200 to 9600.
+    UARTConfigSetExpClk(UART1_BASE, ROM_SysCtlClockGet(), 9600,//115200,   //Jimmy: change1: from 1200 to 9600.
                              (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE |     
                              UART_CONFIG_PAR_NONE));                         
                                                                              
@@ -147,6 +148,8 @@ void InitUART1()
 	Uart1_indicator = 0;
 	Uart1_rcvN = 0;
 	memset(Uart1_rvcBuf,0,sizeof(Uart1_rvcBuf));
+
+	I2C_Initial2();
 }
 
  
@@ -262,26 +265,6 @@ void cmdprocess(const unsigned char *pucBuffercc)
 			  ClearCalibrationStatusMsg();
 	   	}
 		else
-	   	if(strcmp(cmd,"fcmsg")==0)
-	   	{
-	   	       ClearCalibrationStatusMsg();
-	   	}
-		else
-	   	if(strcmp(cmd,"fmsg0")==0)
-	   	{
-	   	       InfomFPGAGenGivenGrayScale(0,0);
-	   	}
-		else
-	   	if(strcmp(cmd,"fmsg1")==0)
-	   	{
-	   	       WriteCalibrationStatusMsg1();
-	   	}
-		else
-	   	if(strcmp(cmd,"fmsg2")==0)
-	   	{
-	   	       WriteCalibrationStatusMsg2();
-	   	}
-		else
 	   	if(strcmp(cmd,"version")==0)
 	   	{
 	   	       u1printf("MCU Version:[%s]\n\r",MCU_VERSION_STRING);
@@ -293,28 +276,62 @@ void cmdprocess(const unsigned char *pucBuffercc)
 	   	       u1printf("register:[%x] ctl[%x]\n\r",FPGAStatus,FPGA_CTL);
 	   	}
 		else
-	    if(strcmp(cmd,"cal1")==0)
-	   	{
-	   	       InformFPGASetGen2Mode();
-	    	               InfomFPGABeginCalibration();
-	    	               InfomFPGASetMaxBackgroundLevel(255);
-	   	}
-		else
-	    if(strcmp(cmd,"cal2")==0)
-	   	{
-	   	       SendMaxToLuxmeter(100);
-			   u1printf("cal2\n\r");
-	   	}
-				else
-	    if(strcmp(cmd,"cal3")==0)
-	   	{
-	   	       ClearExistingCalibration();
-			   u1printf("cal3\n\r");
-	   	}
-	    if(strcmp(cmd,"i2c")==0)
-	   	{
-	   	       ALTest();
-	   	}
+	    if(strcmp(cmd,"color")==0)
+	    {
+	    	 int i =0;
+	    	 for(i=0;i<256;i++)
+	    	 {
+	    		 WriteFPGAData((char) i);
+	    	     u1printf("color [%d]\n\r",i);
+	    	     Delay_ms(500);
+	    	 }
+	    }
+	    else
+	    if(strcmp(cmd,"cl")==0)
+	    {
+	    		 WriteFPGAData((char) index);
+	    	     u1printf("color [%d]\n\r",index);
+	    }
+	    else
+	    if(strcmp(cmd,"icw")==0)
+	    {
+	    	sscanf(pucBuffercc,"%s %x %x",cmd,&index,&value);
+	    	writeByte2(index,(char)value);
+	    	u1printf("icw [%x][%x]\n\r",index,(char)value);
+	    }
+	    else
+	    if(strcmp(cmd,"icr")==0)
+	    {
+	    	sscanf(pucBuffercc,"%s %x",cmd,&index);
+	    	value = readByte2(index);
+	    	u1printf("icr [%x][%x]\n\r",index,(char)value);
+	    }
+	    else
+	    if(strcmp(cmd,"icadrset")==0)
+	    {
+	    	sscanf(pucBuffercc,"%s %x",cmd,&index);
+	    	setDevAddr(index);
+	    	u1printf("i2c addr set [%x]\n\r",index);
+	    }
+	    else
+	    if(strcmp(cmd,"icadrget")==0)
+	    {
+	    	value = getDevAddr(index);
+	    	u1printf("i2c addr get [%x]\n\r",value);
+	    }
+	    else
+	    	    if(strcmp(cmd,"clk")==0)
+	    	    {
+	    	    	initclk();
+	    	    	u1printf("i2c clk\n\r");
+	    	    }
+	   else
+	    	  if(strcmp(cmd,"rfpga")==0)
+	    	  {
+	    		  ResetFPGA();
+	    	    	u1printf("reset FPGA\n\r");
+	    	  }
+
 
 }
  

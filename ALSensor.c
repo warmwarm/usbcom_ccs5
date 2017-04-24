@@ -35,8 +35,9 @@ void GetALSRawData(char * pbuf)
 	}
 	pbuf[0] = readByte(0x09);
 	pbuf[1] = readByte(0x0a);
-	//pbuf[2] = readByte(0x00);
-	//pbuf[3] = readByte(0x01);
+	//pbuf[1] = (pbuf[1]&0x0F);
+	pbuf[2] = readByte(0x00);
+	pbuf[3] = 0x0A;
 	return;
 }
 
