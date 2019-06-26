@@ -37,7 +37,7 @@ volatile extern int gUsbGetLux;
 
 int main(void)
 {
-	Delay_ms(200);
+	Delay_ms(150);
 	gUsbGetLux = -1;
    ROM_SysTickPeriodSet(ROM_SysCtlClockGet());
    ROM_SysTickEnable();	
@@ -56,12 +56,16 @@ int main(void)
    ///add by Minghao
    backlightControlLevel = 255;
 
-   Delay_ms(500);//delay for pad to power up
+   InformFPGAReleaseEEPROM();
+   EnableTristate();
+   Delay_ms(2000);//delay for pad to power up
+   DisableTristate();
+   InformFPGATakeEEPROM();
    while(!jumpToBootloaderSignaled)
    {
 	 //Delay(5);
 	 CheckDICOMButton();
-	 Uart1_ProcessCmd();
+	 //Uart1_ProcessCmd();
    }
    u1printf("jump to boot loader\n\r");
    Delay(50);
