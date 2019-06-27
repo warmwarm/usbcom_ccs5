@@ -174,13 +174,16 @@ void TST_UART1_Send(const unsigned char *pucBuffer, unsigned int ulCount)
 ///print string to uart1
 int u1printf(const char* aStrToPrint, ...)
 {
-   char buffer[1024];
+
    int ret = 0;
+   /*
+   char buffer[1024];
    va_list args;
    va_start(args, aStrToPrint);
 
    ret = vsnprintf(buffer,sizeof(buffer),aStrToPrint,args);
    TST_UART1_Send(buffer, (unsigned int)strlen((char *)buffer));
+   */
    return ret;
 }
  
@@ -236,7 +239,7 @@ void cmdprocess(const unsigned char *pucBuffercc)
 	   	if(strcmp(cmd,"eepread")==0)
 	   	{
 	   	       InformFPGAReleaseEEPROM();
-	   	       EnableTristate(); 
+
                for(i=0;i<16;i++)
                {
                   //u1printf("\n\r[%04d] ",i*16);
@@ -249,7 +252,7 @@ void cmdprocess(const unsigned char *pucBuffercc)
 					 u1printf("%04d\n\r",value);
                   }
                }
-			   DisableTristate();
+
 			   InformFPGATakeEEPROM();
 			   u1printf("\n\r");
 	   	}

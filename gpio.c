@@ -177,29 +177,6 @@ int GetHardwareVesion()
 }
 	
 
-void SelectEEPROM()
-{
-//	GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_3,0x0);	
-	
-}
-void DeselectEEPROM()
-{
-	//GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_3,0x08);	
-	
-}
-void EnableTristate()
-{
-   // tell FPGA to release EEPROM so MCU can access it
-   //GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3,0x08);	
-	
-}
 
-void DisableTristate()
-{
-	
-   //let FPGA to access EEPROM
-   //GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3,0x0);
-	
-}
 
 

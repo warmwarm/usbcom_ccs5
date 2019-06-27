@@ -57,9 +57,9 @@ int main(void)
    backlightControlLevel = 255;
 
    InformFPGAReleaseEEPROM();
-   EnableTristate();
+
    Delay_ms(2000);//delay for pad to power up
-   DisableTristate();
+
    InformFPGATakeEEPROM();
    while(!jumpToBootloaderSignaled)
    {

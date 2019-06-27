@@ -186,10 +186,7 @@ unsigned char CRC8_Tab(unsigned char *p, char counter);
 //extern unsigned long uart1ruan;
 //GPIO
 void InitGPIO();
-void EnableTristate();
-void DisableTristate();
-void SelectEEPROM();
-void DeselectEEPROM();
+
 void InitGPIOPB3();
 void GPIOPB3IntHandler(void);
 //FPGA

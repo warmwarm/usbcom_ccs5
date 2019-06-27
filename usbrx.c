@@ -29,7 +29,6 @@ void WriteLUT(int type)
      //InfomFPGABeginCalibration();
 	 InformFPGAReleaseEEPROM();
 
-	 EnableTristate();
 	 for (i=0;i<512;i++)
 	 {
 	     //itoa(valuechar, wbuff[i]);
@@ -43,7 +42,7 @@ void WriteLUT(int type)
 	     }
 
 	  }
-	  DisableTristate();
+
 	  InformFPGATakeEEPROM();
       wbuff[512] = 0;
     }
@@ -186,7 +185,6 @@ void usbRxHandler(unsigned char*rev_buf)
             		print("restored LUT in uxbRxHandler.");
             		
             		InformFPGAReleaseEEPROM();
-            		EnableTristate();   
 
        	   		    for(ii=0;ii<512;ii++)
        	   		    {
@@ -199,8 +197,7 @@ void usbRxHandler(unsigned char*rev_buf)
                                
                       SPIWriteByte(HIGH(DestAddr),LOW(DestAddr),value);
                     }
-           		
-            	   DisableTristate();      
+
                    InformFPGATakeEEPROM();
 	          	   break;
             	}
@@ -244,7 +241,6 @@ void usbRxHandler(unsigned char*rev_buf)
 					 start = rxcmd->msg.state * 512;
 					 j = rxcmd->msgstr.str[0];
             		 InformFPGAReleaseEEPROM();
-            		 EnableTristate();
 
             		 u1printf("read LUT Table begin:[%d] start[%d]\n\r",j,start);
 					 
@@ -258,7 +254,6 @@ void usbRxHandler(unsigned char*rev_buf)
 	            		    {
 	            		        print("read LUT fail.");
 
-	            		        DisableTristate();
 	            		        InformFPGATakeEEPROM();
 								rsp.msg.state = 255;
 	            		        break;
@@ -270,7 +265,6 @@ void usbRxHandler(unsigned char*rev_buf)
 	            		    {
 	            		        print("read LUT fail.");
 
-	            		        DisableTristate();
 	            		        InformFPGATakeEEPROM();
 								rsp.msg.state = 255;
 	            		        break;
@@ -282,7 +276,7 @@ void usbRxHandler(unsigned char*rev_buf)
 					     }
 
             		print("read LUT done.");
-            		DisableTristate();
+
             		InformFPGATakeEEPROM();
 					break;
             	}            	

@@ -169,7 +169,7 @@ tBoolean writePageToEEPROM (unsigned char* rev_buf)
     unsigned char value;
 
     InformFPGAReleaseEEPROM();
-    EnableTristate();
+
         
     pageIndex = rev_buf[1];
     for (i=0; i<32; i++)      /* index inside the page */
@@ -186,13 +186,11 @@ tBoolean writePageToEEPROM (unsigned char* rev_buf)
        {
          u1printf("write page fail\n\r");  /* check if we have printf routines...*/
        
-         DisableTristate();
          InformFPGATakeEEPROM();
          return false;
        }
     }
 
-    DisableTristate();
     InformFPGATakeEEPROM();
     return true;
 }
@@ -250,7 +248,6 @@ tBoolean readLUTFromEEPROM()
 	 unsigned long LoAdd, HiAdd;
 
 	 InformFPGAReleaseEEPROM();
-	 EnableTristate();
 
 	 print("read LUT begin:");
 	 for(i=0;i<512;i++)
@@ -261,7 +258,6 @@ tBoolean readLUTFromEEPROM()
 	    {
 	        print("read LUT fail.");  /* check if we have printf routines...*/
 
-	        DisableTristate();
 	        InformFPGATakeEEPROM();
 	        return false;
 	    }
@@ -270,7 +266,7 @@ tBoolean readLUTFromEEPROM()
 	}
 
 	 print("read LUT done.");
-	DisableTristate();
+
 	InformFPGATakeEEPROM();
 	return true;
 }
