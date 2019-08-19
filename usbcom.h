@@ -119,6 +119,8 @@ extern int calib_status;
 #define GET_LC_VERSION_REQ  19
 #define GET_HW_VERSION_REQ  20
 #define GET_EVN_LUX 21
+#define SET_SERIAL_REQ 22
+#define GET_SERIAL_REQ 23
 
 
 #define WRITE_LUT_RSP 100
@@ -143,6 +145,8 @@ extern int calib_status;
 #define GET_LC_VERSION_RSP  119
 #define GET_HW_VERSION_RSP  120
 #define GET_EVN_LUX_RSP 121
+#define SET_SERIAL_RSP 122
+#define GET_SERIAL_RSP 123
 
 
 #define DICOM_EVENT_REPORT 150
@@ -222,6 +226,8 @@ void WriteLutIndex(unsigned char ddl,unsigned long index);
 void saveMaxBacklightLevel(unsigned char level);
 void getMaxBacklightLevel();
 long SPIWriteNByte(unsigned long HiAddr,unsigned long LoAddr, Uchar * pdata,int len);
+void WriteSerialNumber(char * pserial,int length);
+void ReadSerialNumber(char * pbuf, int length);
 
 //usb
 void JumpToDFU();

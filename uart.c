@@ -176,14 +176,14 @@ int u1printf(const char* aStrToPrint, ...)
 {
 
    int ret = 0;
-   /*
-   char buffer[1024];
+
+   char buffer[256];
    va_list args;
    va_start(args, aStrToPrint);
 
    ret = vsnprintf(buffer,sizeof(buffer),aStrToPrint,args);
    TST_UART1_Send(buffer, (unsigned int)strlen((char *)buffer));
-   */
+
    return ret;
 }
  
@@ -211,6 +211,7 @@ void cmdprocess(const unsigned char *pucBuffercc)
 	 int i = 0,j=0;
 	 int value = 0;
      int addr = 0;
+
 	 sscanf(pucBuffercc,"%s %d %f",cmd,&index,&lux);
 	 if(strcmp(cmd,"dicom")==0)
 	 	{
@@ -334,7 +335,21 @@ void cmdprocess(const unsigned char *pucBuffercc)
 	    		  ResetFPGA();
 	    	    	u1printf("reset FPGA\n\r");
 	    	  }
-
+	   else
+	    	  if(strcmp(cmd,"serw")==0)
+	    	  {
+	    		  char ser[32] = {0};
+				  sscanf(pucBuffercc,"%s %s",cmd,ser);
+				  WriteSerialNumber(ser,32);
+				  u1printf("write serial [%s]\n\r",ser);
+	    	   }
+	   else
+	    	  if(strcmp(cmd,"serr")==0)
+			  {
+				  char ser[32] = {0};
+				  ReadSerialNumber(ser,32);
+				  u1printf("read serial [%s]\n\r",ser);
+			   }
 
 }
  
@@ -526,8 +541,8 @@ TST_UART1_IntHandler(void)
         }
 
     }
-    
-    //Uart1_ProcessCmd();
+
+    Uart1_ProcessCmd();
 
 	
 	

@@ -48,6 +48,48 @@ void WriteLUT(int type)
     }
 }
 
+//Write Serial Number, length = 30;
+void WriteSerialNumber(char * pserial, int length)
+{
+	unsigned int i;
+	InformFPGAReleaseEEPROM();
+	if (length > 32)
+	{
+		length = 32;
+	}
+	 for (i=0;i<length;i++)
+	 {
+	     if(!SPIWriteByte(HIGH(2048+i), LOW(2048+i),pserial[i]))
+	     {
+	        print("write eeprom fail");
+	     }
+
+	  }
+	InformFPGATakeEEPROM();
+}
+
+//Read Serial Number, Length = 30;
+void ReadSerialNumber(char * pbuf, int length)
+{
+	unsigned int i;
+	if(length < 30)
+	{
+		return;
+	}
+	print("read eeprom...");
+	InformFPGAReleaseEEPROM();
+
+	 for (i=0;i<32;i++)
+	 {
+		 if(!SPIReadByte(HIGH(2048+i),LOW(2048+i),pbuf+i))
+		 {
+			print("read eeprom fail");
+		 }
+
+	  }
+	InformFPGATakeEEPROM();
+}
+
 void usbRxHandler(unsigned char*rev_buf)
 
 {
@@ -450,6 +492,16 @@ void usbRxHandler(unsigned char*rev_buf)
 					snprintf(rsp.msgstr.str,sizeof(rsp.msgstr.str),"%s","HW Version");
             		break;
 	            }  
+				case SET_SERIAL_REQ:  //Write Serial command
+            	{
+                    WriteSerialNumber(rxcmd->msgstr.str,sizeof(rxcmd->msgstr.str));    //SerialNumber is fixed length  <=30 bytes
+            		break;
+	            }
+				case GET_SERIAL_REQ: //Read Serial command
+            	{
+					ReadSerialNumber(rsp.msgstr.str,sizeof(rsp.msgstr.str));
+            		break;
+	            }
 				//send feedback to host
 				
 	          }

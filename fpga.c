@@ -176,7 +176,7 @@ void InformFPGASetGen2Mode()
 
 void InformFPGAReleaseEEPROM()
 {
-u1printf("InformFPGAReleaseEEPROM\n\r");
+//u1printf("InformFPGAReleaseEEPROM\n\r");
    FPGA_CTL=FPGA_CTL |  0x04;
 
    //P0=0;
@@ -194,7 +194,7 @@ u1printf("InformFPGAReleaseEEPROM\n\r");
 
 void InformFPGATakeEEPROM()
 {
-u1printf("InformFPGATakeEEPROM\n\r");
+//u1printf("InformFPGATakeEEPROM\n\r");
    FPGA_CTL=FPGA_CTL &  0xFB;
    //P0=0;
    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PINS,0x00);
