@@ -86,6 +86,7 @@ extern int calib_status;
 //define message type from USB device to USB host
 #define DEC_TO_HOST_MSG_LENGTH 34
 #define DEC_TO_HOST_INT_LENGTH 16
+#define SERIAL_LOCATION 2048
 
 #define AUTO_CALIBRATION_ACK 1
 #define AUTO_CALIBRATION_NACK 2
