@@ -122,6 +122,8 @@ extern int calib_status;
 #define GET_EVN_LUX 21
 #define SET_SERIAL_REQ 22
 #define GET_SERIAL_REQ 23
+#define SET_REG_REQ 24
+#define GET_REG_REQ 25
 
 
 #define WRITE_LUT_RSP 100
@@ -148,6 +150,8 @@ extern int calib_status;
 #define GET_EVN_LUX_RSP 121
 #define SET_SERIAL_RSP 122
 #define GET_SERIAL_RSP 123
+#define SET_REG_RSP 124
+#define GET_REG_RSP 125
 
 
 #define DICOM_EVENT_REPORT 150
@@ -156,7 +160,7 @@ extern int calib_status;
 #define ERROR_EVENT_REPORT 153
 
 
-unsigned long  SendDatatoHost(Uchar *ptr, int len);
+unsigned long SendDatatoHost(Uchar *ptr, int len);
 unsigned long SendCalibrationAckMsg();
 unsigned long SendCalibrationNAckMsg();
 unsigned long SendCalibrationErrorMsg();

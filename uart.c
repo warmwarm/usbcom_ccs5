@@ -177,7 +177,7 @@ int u1printf(const char* aStrToPrint, ...)
 
    int ret = 0;
 
-   char buffer[256];
+   char buffer[128];
    va_list args;
    va_start(args, aStrToPrint);
 

@@ -48,6 +48,33 @@ void WriteLUT(int type)
     }
 }
 
+void WriteRegStatus(unsigned char status)
+{
+	InformFPGAReleaseEEPROM();
+
+	if(!SPIWriteByte(HIGH(SERIAL_LOCATION+32), LOW(SERIAL_LOCATION+32),status))
+	{
+	   print("write eeprom fail");
+	}
+
+	InformFPGATakeEEPROM();
+}
+
+unsigned char ReadRegStatus()
+{
+	unsigned char st = 0;
+
+	InformFPGAReleaseEEPROM();
+
+	if(!SPIReadByte(HIGH(SERIAL_LOCATION+32),LOW(SERIAL_LOCATION+32),&st))
+	{
+		print("read eeprom fail");
+	}
+
+	InformFPGATakeEEPROM();
+	return st;
+}
+
 //Write Serial Number, length = 30;
 void WriteSerialNumber(char * pserial, int length)
 {
@@ -65,6 +92,7 @@ void WriteSerialNumber(char * pserial, int length)
 	     }
 
 	  }
+	WriteRegStatus((unsigned char)0);
 	InformFPGATakeEEPROM();
 }
 
@@ -88,6 +116,8 @@ void ReadSerialNumber(char * pbuf, int length)
 	  }
 	InformFPGATakeEEPROM();
 }
+
+
 
 void usbRxHandler(unsigned char*rev_buf)
 
@@ -501,10 +531,20 @@ void usbRxHandler(unsigned char*rev_buf)
 					ReadSerialNumber(rsp.msgstr.str,sizeof(rsp.msgstr.str));
             		break;
 	            }
+				case SET_REG_REQ:  //Write Serial command
+            	{
+            		WriteRegStatus(rxcmd->msg.state);
+            		break;
+	            }
+				case GET_REG_REQ: //Read Serial command
+            	{
+            		rsp.msg.state = ReadRegStatus();
+            		break;
+	            }
 				//send feedback to host
 				
 	          }
-			u1printf("Send rsp\n\r");
+			//u1printf("Send rsp\n\r");
 			SendDatatoHost(rsp.raw, DEC_TO_HOST_MSG_LENGTH);
  }
 
