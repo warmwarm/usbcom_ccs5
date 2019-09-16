@@ -176,14 +176,14 @@ int u1printf(const char* aStrToPrint, ...)
 {
 
    int ret = 0;
-
+   /*
    char buffer[128];
    va_list args;
    va_start(args, aStrToPrint);
 
    ret = vsnprintf(buffer,sizeof(buffer),aStrToPrint,args);
    TST_UART1_Send(buffer, (unsigned int)strlen((char *)buffer));
-
+   */
    return ret;
 }
  
