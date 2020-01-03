@@ -531,12 +531,12 @@ void usbRxHandler(unsigned char*rev_buf)
 					ReadSerialNumber(rsp.msgstr.str,sizeof(rsp.msgstr.str));
             		break;
 	            }
-				case SET_REG_REQ:  //Write Serial command
+				case SET_REG_REQ:  //Write Register command
             	{
             		WriteRegStatus(rxcmd->msg.state);
             		break;
 	            }
-				case GET_REG_REQ: //Read Serial command
+				case GET_REG_REQ: //Read Register command
             	{
             		rsp.msg.state = ReadRegStatus();
             		break;
